@@ -2,16 +2,25 @@ const mongoose = require('mongoose');
 
 const RoomSchema = new mongoose.Schema({
   player1: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    hand: []
   },
   player2: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    hand: []
   },
   player3: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    hand: []
   },
   deck: [
     { A: 'H' },
@@ -66,7 +75,12 @@ const RoomSchema = new mongoose.Schema({
     { J: 'D' },
     { Q: 'D' },
     { K: 'D' }
-  ]
+  ],
+  pot: [],
+  date: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model('Room', RoomSchema);
