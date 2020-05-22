@@ -22,65 +22,259 @@ const RoomSchema = new mongoose.Schema({
     },
     hand: []
   },
-  deck: [
-    { A: 'H' },
-    { '2': 'H' },
-    { '3': 'H' },
-    { '4': 'H' },
-    { '5': 'H' },
-    { '6': 'H' },
-    { '7': 'H' },
-    { '8': 'H' },
-    { '9': 'H' },
-    { '10': 'H' },
-    { J: 'H' },
-    { Q: 'H' },
-    { K: 'H' },
-    { A: 'S' },
-    { '2': 'S' },
-    { '3': 'S' },
-    { '4': 'S' },
-    { '5': 'S' },
-    { '6': 'S' },
-    { '7': 'S' },
-    { '8': 'S' },
-    { '9': 'S' },
-    { '10': 'S' },
-    { J: 'S' },
-    { Q: 'S' },
-    { K: 'S' },
-    { A: 'C' },
-    { '2': 'C' },
-    { '3': 'C' },
-    { '4': 'C' },
-    { '5': 'C' },
-    { '6': 'C' },
-    { '7': 'C' },
-    { '8': 'C' },
-    { '9': 'C' },
-    { '10': 'C' },
-    { J: 'C' },
-    { Q: 'C' },
-    { K: 'C' },
-    { A: 'D' },
-    { '2': 'D' },
-    { '3': 'D' },
-    { '4': 'D' },
-    { '5': 'D' },
-    { '6': 'D' },
-    { '7': 'D' },
-    { '8': 'D' },
-    { '9': 'D' },
-    { '10': 'D' },
-    { J: 'D' },
-    { Q: 'D' },
-    { K: 'D' }
-  ],
-  pot: [],
+  playerCount: {
+    type: Number,
+    default: 0
+  },
+  full: {
+    type: Boolean,
+    default: false
+  },
+  deck: {
+    type: Array,
+    default: [
+      {
+        value: 'A',
+        house: 'H'
+      },
+      {
+        value: '2',
+        house: 'H'
+      },
+      {
+        value: '3',
+        house: 'H'
+      },
+      {
+        value: '4',
+        house: 'H'
+      },
+      {
+        value: '5',
+        house: 'H'
+      },
+      {
+        value: '6',
+        house: 'H'
+      },
+      {
+        value: '7',
+        house: 'H'
+      },
+      {
+        value: '8',
+        house: 'H'
+      },
+      {
+        value: '9',
+        house: 'H'
+      },
+      {
+        value: '9',
+        house: 'H'
+      },
+      {
+        value: '10',
+        house: 'H'
+      },
+      {
+        value: 'J',
+        house: 'H'
+      },
+      {
+        value: 'Q',
+        house: 'H'
+      },
+      {
+        value: 'K',
+        house: 'H'
+      },
+      {
+        value: 'A',
+        house: 'C'
+      },
+      {
+        value: '2',
+        house: 'C'
+      },
+      {
+        value: '3',
+        house: 'C'
+      },
+      {
+        value: '4',
+        house: 'C'
+      },
+      {
+        value: '5',
+        house: 'C'
+      },
+      {
+        value: '6',
+        house: 'C'
+      },
+      {
+        value: '7',
+        house: 'C'
+      },
+      {
+        value: '8',
+        house: 'C'
+      },
+      {
+        value: '9',
+        house: 'C'
+      },
+      {
+        value: '9',
+        house: 'C'
+      },
+      {
+        value: '10',
+        house: 'C'
+      },
+      {
+        value: 'J',
+        house: 'C'
+      },
+      {
+        value: 'Q',
+        house: 'C'
+      },
+      {
+        value: 'K',
+        house: 'C'
+      },
+      {
+        value: 'A',
+        house: 'S'
+      },
+      {
+        value: '2',
+        house: 'S'
+      },
+      {
+        value: '3',
+        house: 'S'
+      },
+      {
+        value: '4',
+        house: 'S'
+      },
+      {
+        value: '5',
+        house: 'S'
+      },
+      {
+        value: '6',
+        house: 'S'
+      },
+      {
+        value: '7',
+        house: 'S'
+      },
+      {
+        value: '8',
+        house: 'S'
+      },
+      {
+        value: '9',
+        house: 'S'
+      },
+      {
+        value: '9',
+        house: 'S'
+      },
+      {
+        value: '10',
+        house: 'S'
+      },
+      {
+        value: 'J',
+        house: 'S'
+      },
+      {
+        value: 'Q',
+        house: 'S'
+      },
+      {
+        value: 'K',
+        house: 'S'
+      },
+      {
+        value: 'A',
+        house: 'D'
+      },
+      {
+        value: '2',
+        house: 'D'
+      },
+      {
+        value: '3',
+        house: 'D'
+      },
+      {
+        value: '4',
+        house: 'D'
+      },
+      {
+        value: '5',
+        house: 'D'
+      },
+      {
+        value: '6',
+        house: 'D'
+      },
+      {
+        value: '7',
+        house: 'D'
+      },
+      {
+        value: '8',
+        house: 'D'
+      },
+      {
+        value: '9',
+        house: 'D'
+      },
+      {
+        value: '9',
+        house: 'D'
+      },
+      {
+        value: '10',
+        house: 'D'
+      },
+      {
+        value: 'J',
+        house: 'D'
+      },
+      {
+        value: 'Q',
+        house: 'D'
+      },
+      {
+        value: 'K',
+        house: 'D'
+      },
+      {
+        value: 'Joker',
+        house: 'Red'
+      },
+      {
+        value: 'Joker',
+        house: 'Black'
+      }
+    ]
+  },
+  pot: {
+    type: Number,
+    default: 0
+  },
   date: {
     type: Date,
     default: Date.now
   }
 });
 
-module.exports = mongoose.model('Room', RoomSchema);
+module.exports = Room = mongoose.model('Room', RoomSchema);
