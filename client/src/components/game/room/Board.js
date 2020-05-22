@@ -25,19 +25,25 @@ const Board = ({ game, auth, leaveRoom, location }) => {
       ((!game.inGame || room !== game.room._id) && !game.loading) ||
       !game.room
     ) {
-      leaveRoom();
       setExit(true);
     }
+    return () => {
+      leaveRoom();
+      socket.disconnect();
+    };
   }, [ENDPOINT, location.search]);
 
   if (exit) {
     return <Redirect to='/menu' />;
   }
-
+  const onClick = e => {
+    e.preventDefault();
+    setExit(true);
+  };
   return (
     <Fragment>
       Game room
-      <div>Leave</div>
+      <button onClick={e => onClick(e)}>Leave</button>
     </Fragment>
   );
 };
