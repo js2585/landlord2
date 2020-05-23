@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import { leaveRoom } from '../../../actions/game';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import queryString from 'query-string';
 
 let socket;
@@ -23,12 +23,12 @@ const Board = ({ game, auth, leaveRoom, location }) => {
 
     if (
       ((!game.inGame || room !== game.room._id) && !game.loading) ||
-      !game.room
+      (!game.room && !game.loading)
     ) {
       setExit(true);
     }
     return () => {
-      leaveRoom();
+      // leaveRoom();
       socket.disconnect();
     };
   }, [ENDPOINT, location.search]);
@@ -43,7 +43,9 @@ const Board = ({ game, auth, leaveRoom, location }) => {
   return (
     <Fragment>
       Game room
-      <button onClick={e => onClick(e)}>Leave</button>
+      <Link to='/menu' onClick={e => onClick(e)}>
+        Leave
+      </Link>
     </Fragment>
   );
 };

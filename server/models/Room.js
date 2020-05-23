@@ -6,21 +6,27 @@ const RoomSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
-    hand: []
+    hand: {
+      type: Array
+    }
   },
   player2: {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
-    hand: []
+    hand: {
+      type: Array
+    }
   },
   player3: {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
-    hand: []
+    hand: {
+      type: Array
+    }
   },
   playerCount: {
     type: Number,

@@ -25,6 +25,10 @@ const UserSchema = new mongoose.Schema({
       ref: 'User'
     }
   ],
+  room: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Room'
+  },
   date: {
     type: Date,
     default: Date.now

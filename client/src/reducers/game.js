@@ -1,4 +1,9 @@
-import { JOIN_ROOM_SUCCESS, ROOM_ERROR, LEAVE_ROOM } from '../actions/types';
+import {
+  JOIN_ROOM_SUCCESS,
+  ROOM_ERROR,
+  LEAVE_ROOM,
+  ROOM_LOADED
+} from '../actions/types';
 const initialState = {
   room: null,
   inGame: null,
@@ -9,6 +14,7 @@ export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case JOIN_ROOM_SUCCESS:
+    case ROOM_LOADED:
       return {
         ...state,
         inGame: true,

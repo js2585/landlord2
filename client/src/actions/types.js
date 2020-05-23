@@ -10,3 +10,4 @@ export const LOGOUT = 'LOGOUT';
 export const JOIN_ROOM_SUCCESS = 'JOIN_ROOM_SUCCESS';
 export const ROOM_ERROR = 'ROOM_ERROR';
 export const LEAVE_ROOM = 'LEAVE_ROOM';
+export const ROOM_LOADED = 'ROOM_LOADED';

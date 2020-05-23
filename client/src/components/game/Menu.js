@@ -5,23 +5,16 @@ import { joinNextRoom } from '../../actions/game';
 import PropTypes from 'prop-types';
 
 const Menu = ({ joinNextRoom }) => {
-  const onClick = e => {
-    e.preventDefault();
-    joinNextRoom();
-  };
   return (
     <Fragment>
       Menu Page
       <div>
-        <button onClick={e => onClick(e)}>
-          <Link to='/game/loading'>Join Random Game</Link>
-        </button>
-        <Link to={`/board?room=123`}>Go To Fake Room</Link>
+        <Link onClick={e => joinNextRoom()} to='/game/loading'>
+          Join Random Game
+        </Link>
       </div>
       <div>
-        <button>
-          <Link to='/'>Host Game</Link>
-        </button>
+        <Link to='/'>Host Game</Link>
       </div>
     </Fragment>
   );
