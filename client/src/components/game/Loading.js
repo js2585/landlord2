@@ -2,9 +2,9 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-const Loading = ({ game: { inGame, room, loading } }) => {
-  if (inGame && !loading) {
-    return <Redirect to={`/board?room=${room._id}`} />;
+const Loading = ({ game }) => {
+  if (game.inGame && !game.loading) {
+    return <Redirect to={`/board?room=${game.room._id}`} />;
   }
   return (
     <Fragment>

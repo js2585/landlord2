@@ -39,6 +39,9 @@ router.get('/join', auth, async (req, res) => {
       room.players.push({ user: user._id });
       room.playerCount += 1;
     }
+    if (room.playerCount >= 3) {
+      room.full = true;
+    }
     await room.save();
     res.json(room);
   } catch (err) {

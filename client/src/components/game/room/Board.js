@@ -20,18 +20,17 @@ const Board = ({ game, auth, leaveRoom, location }) => {
 
     setRoom(room);
     //When to redirect
-
     if (
       ((!game.inGame || room !== game.room._id) && !game.loading) ||
       (!game.room && !game.loading)
     ) {
       setExit(true);
     }
+    //cleanup on dismount
     return () => {
-      // leaveRoom();
       socket.disconnect();
     };
-  }, [ENDPOINT, location.search]);
+  }, [ENDPOINT, location.search, game]);
 
   if (exit) {
     return <Redirect to='/menu' />;
