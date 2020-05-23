@@ -20,10 +20,7 @@ const Board = ({ game, auth, leaveRoom, location }) => {
 
     setRoom(room);
     //When to redirect
-    if (
-      ((!game.inGame || room !== game.room._id) && !game.loading) ||
-      (!game.room && !game.loading)
-    ) {
+    if ((!game.inGame || room !== game.room._id) && !game.loading) {
       setExit(true);
     }
     //cleanup on dismount

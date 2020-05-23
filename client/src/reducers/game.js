@@ -2,7 +2,8 @@ import {
   JOIN_ROOM_SUCCESS,
   ROOM_ERROR,
   LEAVE_ROOM,
-  ROOM_LOADED
+  ROOM_LOADED,
+  NO_ROOM_LOADED
 } from '../actions/types';
 const initialState = {
   room: null,
@@ -23,6 +24,7 @@ export default function(state = initialState, action) {
       };
     case ROOM_ERROR:
     case LEAVE_ROOM:
+    case NO_ROOM_LOADED:
       return {
         ...state,
         room: null,
