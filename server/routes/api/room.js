@@ -25,61 +25,48 @@ router.get('/', auth, async (req, res) => {
 router.get('/join', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate('room');
-    const rooms = await Room.find({ full: false });
+    const rooms = await Room.find({ full: false }).populate('players.user');
+    let room;
     if (rooms.length <= 0 || !rooms) {
-      const newRoom = new Room();
-      await newRoom.save();
-      user.room = newRoom;
-      await user.save();
-      return res.json(newRoom);
+      room = new Room();
+    } else {
+      rooms.sort((a, b) => (a.playerCount > b.playerCount ? -1 : 1));
+      room = rooms[0];
     }
-    rooms.sort((a, b) => (a.playerCount > b.playerCount ? -1 : 1));
-    const room = rooms[0];
-    user.room = room;
+    user.room = room._id;
     await user.save();
+    if (room.players.length == room.playerCount) {
+      room.players.push({ user: user._id });
+      room.playerCount += 1;
+    }
+    await room.save();
     res.json(room);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
 });
-// @route   POST api/users/joinroom
-// @desc    Update user's room
+// @route   GET api/room/leave
+// @desc    User leaves room
 // @access  Private
-// router.post('/joinroom', auth, async (req, res) => {
-//   const { roomId } = req.body;
-//   try {
-//     const user = await User.findById(req.user.id);
-//     const room = await Room.findById(roomId)
-//       .populate(player1.user)
-//       .populate(player2.user)
-//       .populate(player3.user);
-//     user.room = room;
-//     if (!room.player1.user) {
-//       user.save();
-//       room.player1.user = user;
-//       await room.save();
-//       res.json(user);
-//     } else if (!room.player2.user) {
-//       user.save();
-//       room.player2.user = user;
-//       await room.save();
-//       res.json(user);
-//     } else if (!room.player3.user) {
-//       user.save();
-//       room.player3.user = user;
-//       await room.save();
-//       res.json(user);
-//     } else {
-//       return res.status(400).json({ msg: 'Room Full' });
-//     }
-//   } catch (err) {
-//     console.error(err.message);
-//     if (err instanceof mongoose.Error.CastError) {
-//       return res.status(400).json({ msg: 'Room or User not found' });
-//     }
-//     res.status(500).send('Server Error');
-//   }
-// });
+router.get('/leave', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate('room');
+    const room = await Room.findById(user.room._id).populate('players.user');
+    room.players.forEach((player, index) => {
+      if (player.user._id.equals(user._id)) {
+        room.players.splice(index, 1);
+        room.playerCount -= 1;
+      }
+    });
+    await room.save();
+    user.room = null;
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;

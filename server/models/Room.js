@@ -1,33 +1,18 @@
 const mongoose = require('mongoose');
 
 const RoomSchema = new mongoose.Schema({
-  player1: {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    hand: {
-      type: Array
+  players: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      hand: {
+        type: Array,
+        default: []
+      }
     }
-  },
-  player2: {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    hand: {
-      type: Array
-    }
-  },
-  player3: {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    hand: {
-      type: Array
-    }
-  },
+  ],
   playerCount: {
     type: Number,
     default: 0

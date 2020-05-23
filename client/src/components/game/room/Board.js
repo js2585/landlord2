@@ -38,6 +38,7 @@ const Board = ({ game, auth, leaveRoom, location }) => {
   }
   const onClick = e => {
     e.preventDefault();
+    leaveRoom();
     setExit(true);
   };
   return (
