@@ -23,26 +23,24 @@ const Board = ({ game, auth, leaveRoom, location }) => {
     if ((!game.inGame || room !== game.room._id) && !game.loading) {
       setExit(true);
     }
+  }, [ENDPOINT, location.search, game]);
+
+  useEffect(() => {
     //cleanup on dismount
     return () => {
+      leaveRoom();
       socket.disconnect();
     };
-  }, [ENDPOINT, location.search, game]);
+  }, []);
 
   if (exit) {
     return <Redirect to='/menu' />;
   }
-  const onClick = e => {
-    e.preventDefault();
-    leaveRoom();
-    setExit(true);
-  };
+
   return (
     <Fragment>
       Game room
-      <Link to='/menu' onClick={e => onClick(e)}>
-        Leave
-      </Link>
+      <Link to='/menu'>Leave</Link>
     </Fragment>
   );
 };
