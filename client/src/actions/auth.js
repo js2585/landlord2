@@ -9,6 +9,7 @@ import {
   LOGOUT
 } from './types';
 import { setAlert } from './alert';
+import { loadRoom } from './game';
 
 export const loadUser = () => async dispatch => {
   try {
@@ -17,6 +18,7 @@ export const loadUser = () => async dispatch => {
       type: USER_LOADED,
       payload: res.data
     });
+    dispatch(loadRoom());
   } catch (err) {
     dispatch({
       type: AUTH_ERROR

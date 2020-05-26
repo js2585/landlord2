@@ -15,7 +15,6 @@ import PrivateRoute from './components/routing/PrivateRoute';
 import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './actions/auth';
 import { Provider } from 'react-redux';
-import { loadRoom } from './actions/game';
 import store from './store';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -24,7 +23,6 @@ function App() {
   useEffect(() => {
     setAuthToken(localStorage.getItem('token'));
     store.dispatch(loadUser());
-    store.dispatch(loadRoom());
   }, []);
 
   return (

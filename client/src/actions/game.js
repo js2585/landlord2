@@ -13,7 +13,6 @@ export const joinNextRoom = () => async dispatch => {
     const res = await axios.get('/api/room/join');
     const room = res.data;
     dispatch({ type: JOIN_ROOM_SUCCESS, payload: room });
-    dispatch(loadRoom());
     //load user because get request changes the user's room data
     dispatch(loadUser());
   } catch (err) {
@@ -45,7 +44,6 @@ export const leaveRoom = () => async dispatch => {
   try {
     const res = await axios.get('/api/room/leave');
     dispatch({ type: LEAVE_ROOM });
-    dispatch(loadRoom());
     //load user because get request changes the user's room data
     dispatch(loadUser());
   } catch (err) {
