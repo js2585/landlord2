@@ -6,11 +6,14 @@ const socketio = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
-
+const { addUser } = require('./game');
 //socket logic
 io.on('connect', socket => {
   console.log('User Connected');
-  console.log(socket.id);
+  socket.on('join', ({ userId, room }) => {
+    const { user } = addUser({ socketId: socket.id, userId, room });
+    socket.join(user.room);
+  });
   socket.on('disconnect', () => {
     console.log('User Disconnected');
   });

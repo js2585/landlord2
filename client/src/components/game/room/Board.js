@@ -13,18 +13,28 @@ const Board = ({ game, auth, leaveRoom, location }) => {
   const [room, setRoom] = useState('');
   //determines redirect
   const [exit, setExit] = useState(false);
+  //User stuff
+  const { user } = auth;
+
+  //socket stuff
+  useEffect(() => {
+    if (user && user.room) {
+      socket = io(ENDPOINT);
+      socket.emit('join', { userId: user._id, room });
+    }
+  }, [ENDPOINT, auth]);
+
+  //Room stuff
   useEffect(() => {
     const { room } = queryString.parse(location.search);
-
-    socket = io(ENDPOINT);
-
     setRoom(room);
     //When to redirect
     if ((!game.inGame || room !== game.room._id) && !game.loading) {
       setExit(true);
     }
-  }, [ENDPOINT, location.search, game]);
+  }, [location.search, game]);
 
+  //disconnect
   useEffect(() => {
     //cleanup on dismount
     return () => {
