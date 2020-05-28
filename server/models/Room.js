@@ -7,9 +7,10 @@ const RoomSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
       },
-      hand: {
-        type: Array,
-        default: []
+      hand: [Object],
+      bid: {
+        type: Number,
+        default: 0
       }
     }
   ],
@@ -20,6 +21,21 @@ const RoomSchema = new mongoose.Schema({
   full: {
     type: Boolean,
     default: false
+  },
+  pot: {
+    type: Number,
+    default: 0
+  },
+  middle: [Object],
+  //stage 0: joining room
+  //stage 1: game start
+  stage: {
+    type: Number,
+    default: 0
+  },
+  turn: {
+    type: Number,
+    default: 0
   },
   deck: {
     type: Array,
@@ -61,10 +77,6 @@ const RoomSchema = new mongoose.Schema({
         house: 'H'
       },
       {
-        value: '9',
-        house: 'H'
-      },
-      {
         value: '10',
         house: 'H'
       },
@@ -110,10 +122,6 @@ const RoomSchema = new mongoose.Schema({
       },
       {
         value: '8',
-        house: 'C'
-      },
-      {
-        value: '9',
         house: 'C'
       },
       {
@@ -173,10 +181,6 @@ const RoomSchema = new mongoose.Schema({
         house: 'S'
       },
       {
-        value: '9',
-        house: 'S'
-      },
-      {
         value: '10',
         house: 'S'
       },
@@ -222,10 +226,6 @@ const RoomSchema = new mongoose.Schema({
       },
       {
         value: '8',
-        house: 'D'
-      },
-      {
-        value: '9',
         house: 'D'
       },
       {
@@ -257,10 +257,6 @@ const RoomSchema = new mongoose.Schema({
         house: 'Black'
       }
     ]
-  },
-  pot: {
-    type: Number,
-    default: 0
   },
   date: {
     type: Date,

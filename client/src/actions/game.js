@@ -42,7 +42,7 @@ export const loadRoom = () => async dispatch => {
 
 export const leaveRoom = () => async dispatch => {
   try {
-    const res = await axios.get('/api/room/leave');
+    await axios.get('/api/room/leave');
     dispatch({ type: LEAVE_ROOM });
     //load user because get request changes the user's room data
     dispatch(loadUser());
