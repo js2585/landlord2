@@ -7,13 +7,32 @@ const RoomSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
       },
+      username: {
+        type: String
+      },
       hand: [Object],
       bid: {
+        type: Number,
+        default: 0
+      },
+      score: {
         type: Number,
         default: 0
       }
     }
   ],
+  currentBid: {
+    type: Number,
+    default: 0
+  },
+  bidValue: {
+    type: Number,
+    default: 2000
+  },
+  previousPass: {
+    type: Boolean,
+    default: false
+  },
   playerCount: {
     type: Number,
     default: 0
@@ -22,13 +41,12 @@ const RoomSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  pot: {
-    type: Number,
-    default: 0
-  },
   middle: [Object],
   //stage 0: joining room
-  //stage 1: game start
+  //stage 1: bidding
+  //stage 2: game
+  //stage 3: reset
+  //stage 4: end game
   stage: {
     type: Number,
     default: 0

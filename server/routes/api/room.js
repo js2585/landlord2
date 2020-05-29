@@ -36,7 +36,7 @@ router.get('/join', auth, async (req, res) => {
     user.room = room._id;
     await user.save();
     if (room.players.length == room.playerCount) {
-      room.players.push({ user: user._id });
+      room.players.push({ user: user._id, username: user.username });
       room.playerCount += 1;
     }
     if (room.playerCount >= 3) {
@@ -54,15 +54,7 @@ router.get('/join', auth, async (req, res) => {
 // @access  Private
 router.get('/leave', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).populate('room');
-    const room = await Room.findById(user.room._id).populate('players.user');
-    room.players.forEach((player, index) => {
-      if (player.user._id.equals(user._id)) {
-        room.players.splice(index, 1);
-        room.playerCount -= 1;
-      }
-    });
-    await room.save();
+    const user = await User.findById(req.user.id);
     user.room = null;
     await user.save();
     res.json(user);

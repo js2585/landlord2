@@ -2,11 +2,14 @@ import React, { Fragment, useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import { leaveRoom, loadRoom } from '../../../actions/game';
+import { setAlert } from '../../../actions/alert';
 import { Redirect, Link } from 'react-router-dom';
 import queryString from 'query-string';
 
+//todo: determine what to show on each stage
+
 let socket;
-const Board = ({ game, auth, leaveRoom, location, loadRoom }) => {
+const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
   const ENDPOINT = 'http://localhost:5000';
   //hand
   const [hand, setHand] = useState([]);
@@ -16,6 +19,14 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom }) => {
   const [gameTurn, setTurn] = useState(-1);
   //user's turn
   const [userTurn, setUserTurn] = useState(false);
+  //user bid turn
+  const [userBidTurn, setUserBidTurn] = useState(false);
+  //current bid
+  const [currentBid, setCurrentBid] = useState(-1);
+  //players
+  const [players, setPlayers] = useState([]);
+  //stage
+  const [stage, setStage] = useState(-1);
   //room info
   const [room, setRoom] = useState('');
   //determines redirect
@@ -31,6 +42,10 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom }) => {
       socket.on('Check DB', () => {
         console.log('check db');
         loadRoom();
+      });
+      socket.on('Error', ({ error }) => {
+        console.log(error);
+        setAlert(error.msg, 'danger');
       });
     }
   }, [ENDPOINT, auth]);
@@ -49,8 +64,12 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom }) => {
       );
       setHand(game.room.players[turn].hand);
       setTurn(game.room.turn);
-      setUserTurn(game.room.turn === turn);
-      console.log(hand);
+      setStage(game.room.stage);
+      setUserBidTurn(game.room.turn === turn && game.room.stage === 1);
+      setUserTurn(game.room.turn === turn && game.room.stage === 2);
+      setStage(game.room.stage);
+      setPlayers(game.room.players);
+      setCurrentBid(game.room.currentBid);
     }
   }, [location.search, game, auth]);
 
@@ -91,6 +110,15 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom }) => {
       }
     }
   };
+  //bidding
+  //passing turn
+  const bid = e => {
+    e.preventDefault();
+    if (!userBidTurn) {
+      return;
+    }
+    socket.emit('Bid', { bid: e.target.value });
+  };
   //playing cards
   const playCards = e => {
     e.preventDefault();
@@ -111,10 +139,25 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom }) => {
     socket.emit('Pass');
   };
 
+  const leave = e => {
+    e.preventDefault();
+    socket.emit('Leave');
+    setExit(true);
+  };
+
   return (
     <Fragment>
       Game room
-      <Link to='/menu'>Leave</Link>
+      <button onClick={e => leave(e)}>Leave</button>
+      <div>
+        Users:
+        {players.map((player, index) => (
+          <li key={index}>
+            {player.username} : bidding {player.bid}
+          </li>
+        ))}
+      </div>
+      <div>Stage: {stage}</div>
       <div>
         Cards:
         {cards.map((card, index) => (
@@ -124,7 +167,28 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom }) => {
         ))}
       </div>
       <div>Game Turn: {gameTurn}</div>
-      {userTurn ? <div>Your Turn</div> : <div>Not Your Turn</div>}
+      {userTurn ? (
+        <div>Your Turn to Play</div>
+      ) : (
+        <div>Not Your Turn to Play</div>
+      )}
+      {userBidTurn ? (
+        <div>Your Turn to Bid</div>
+      ) : (
+        <div>Not Your Turn to Bid</div>
+      )}
+      <button onClick={e => bid(e)} value={0}>
+        Pass
+      </button>
+      <button onClick={e => bid(e)} value={1}>
+        1
+      </button>
+      <button onClick={e => bid(e)} value={2}>
+        2
+      </button>
+      <button onClick={e => bid(e)} value={3}>
+        3
+      </button>
       <button onClick={e => playCards(e)}>Play Cards</button>
       <button onClick={e => pass(e)}>Pass</button>
       <div>
@@ -146,5 +210,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { leaveRoom, loadRoom }
+  { leaveRoom, loadRoom, setAlert }
 )(Board);

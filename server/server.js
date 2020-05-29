@@ -9,22 +9,23 @@ const User = require('./models/User');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
-const { addUser, getUsersInRoom, getUser, shuffle, stage0 } = require('./game');
+const { addUser, getUsersInRoom, getUser, stage0, stage1 } = require('./game');
 
-const MAX_USERS = 2;
+const MAX_USERS = 3;
 //socket logic
 let numConnections = 0;
 io.on('connect', async socket => {
   numConnections += 1;
   console.log('User Connected');
   console.log(`Number of Connections ${numConnections}`);
+  //joining
   socket.on('join', async ({ userId, room }) => {
     const { user } = addUser({ socketId: socket.id, userId, room });
     socket.join(user.room);
     //start game
     if (getUsersInRoom(user.room).length === MAX_USERS) {
       try {
-        let mongoRoom = await Room.findById(user.room);
+        let mongoRoom = await Room.findById(user.room).populate('players.user');
         if (mongoRoom.stage === 0) {
           stage0(mongoRoom);
         }
@@ -34,24 +35,60 @@ io.on('connect', async socket => {
     }
     io.to(user.room).emit('Check DB');
   });
-
+  //bidding
+  socket.on('Bid', async ({ bid }) => {
+    const user = getUser(socket.id);
+    try {
+      let mongoRoom = await Room.findById(user.room).populate('players.user');
+      if (mongoRoom.stage === 1) {
+        const { error } = await stage1({ mongoRoom, user, bid });
+        if (error) {
+          socket.emit('Error', { error });
+        }
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+    io.to(user.room).emit('Check DB');
+  });
+  //play cards
   socket.on('Play Cards', async cards => {
     console.log(cards);
   });
-
+  //pass turn
   socket.on('Pass', async () => {
     console.log('Turn Passed');
+    const user = getUser(socket.id);
     try {
-      const user = getUser(socket.id);
-      console.log(user);
       let mongoRoom = await Room.findById(user.room);
       mongoRoom.turn += 1;
       mongoRoom.turn %= MAX_USERS;
       await mongoRoom.save();
-      io.to(user.room).emit('Check DB');
     } catch (err) {
       console.error(err.message);
     }
+    io.to(user.room).emit('Check DB');
+  });
+
+  socket.on('Leave', async () => {
+    const user = getUser(socket.id);
+    try {
+      let mongoRoom = await Room.findById(user.room).populate('players.user');
+      mongoRoom.stage = 4;
+      mongoRoom.players.forEach((player, index) => {
+        if (player.user._id.equals(user.userId)) {
+          mongoRoom.players.splice(index, 1);
+          mongoRoom.playerCount -= 1;
+        }
+      });
+      //todo: go to each user and update earnings
+      //todo: if num games played is less than 3: penalize the user
+      await mongoRoom.save();
+    } catch (err) {
+      console.error(err.message);
+    }
+    io.to(user.room).emit('Check DB');
+    io.to(user.room).emit('Redirect'); //will redirect back to menu in 5 seconds
   });
 
   socket.on('disconnect', () => {
