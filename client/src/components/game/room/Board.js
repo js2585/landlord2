@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import { leaveRoom, loadRoom } from '../../../actions/game';
 import { setAlert } from '../../../actions/alert';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import queryString from 'query-string';
 
 //todo: determine what to show on each stage
@@ -23,10 +23,16 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
   const [userBidTurn, setUserBidTurn] = useState(false);
   //current bid
   const [currentBid, setCurrentBid] = useState(-1);
+  //middle
+  const [middle, setMiddle] = useState([]);
   //players
   const [players, setPlayers] = useState([]);
+  //card rank
+  const [rank, setRank] = useState(-1);
   //stage
   const [stage, setStage] = useState(-1);
+  //gameended
+  const [gameOver, setGameOver] = useState(false);
   //room info
   const [room, setRoom] = useState('');
   //determines redirect
@@ -46,6 +52,14 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
       socket.on('Error', ({ error }) => {
         console.log(error);
         setAlert(error.msg, 'danger');
+      });
+      socket.on('Game Over', () => {
+        console.log('game over');
+        setGameOver(true);
+      });
+      socket.on('Game Restart', () => {
+        console.log('game restart');
+        setGameOver(false);
       });
     }
   }, [ENDPOINT, auth]);
@@ -70,6 +84,8 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
       setStage(game.room.stage);
       setPlayers(game.room.players);
       setCurrentBid(game.room.currentBid);
+      setMiddle(game.room.middle);
+      setRank(game.room.cardRank);
     }
   }, [location.search, game, auth]);
 
@@ -123,19 +139,25 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
   const playCards = e => {
     e.preventDefault();
     if (!userTurn) {
+      setAlert('Not Your Turn', 'danger');
       return;
     }
     if (cards.length <= 0 || !cards) {
+      setAlert('You Must Select Some Cards or Pass', 'danger');
       return;
     }
     socket.emit('Play Cards', cards);
+    setCards([]);
   };
   //passing turn
   const pass = e => {
     e.preventDefault();
     if (!userTurn) {
+      setAlert('Not Your Turn', 'danger');
       return;
     }
+    //reset
+    setCards([]);
     socket.emit('Pass');
   };
 
@@ -149,15 +171,28 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
     <Fragment>
       Game room
       <button onClick={e => leave(e)}>Leave</button>
+      <div>{gameOver ? <strong>Game Over</strong> : null}</div>
       <div>
         Users:
         {players.map((player, index) => (
           <li key={index}>
-            {player.username} : bidding {player.bid}
+            {player.username} : bidding {player.bid} : Landlord :
+            {player.landlord ? <span>Yes</span> : <span>No</span>} : Score :{' '}
+            {player.score}
           </li>
         ))}
       </div>
+      <div>Current Bid: {currentBid}</div>
       <div>Stage: {stage}</div>
+      <div>
+        Middle:
+        {middle.map((card, index) => (
+          <li key={index} value={index}>
+            {card.value} {card.house}
+          </li>
+        ))}
+      </div>
+      <div>Rank: {rank}</div>
       <div>
         Cards:
         {cards.map((card, index) => (

@@ -9,7 +9,22 @@ const User = require('./models/User');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
-const { addUser, getUsersInRoom, getUser, stage0, stage1 } = require('./game');
+const {
+  addUser,
+  getUsersInRoom,
+  getUser,
+  stage0,
+  stage1,
+  stage2,
+  endGame
+} = require('./game');
+
+//todo: stage rendering
+//todo: stage 2 stuff
+//todo: stage 3 reset
+//todo: stage 4 redirect
+//todo: timeout (afk)
+//todo: private games
 
 const MAX_USERS = 3;
 //socket logic
@@ -53,7 +68,36 @@ io.on('connect', async socket => {
   });
   //play cards
   socket.on('Play Cards', async cards => {
-    console.log(cards);
+    const user = getUser(socket.id);
+    try {
+      let mongoRoom = await Room.findById(user.room).populate('players.user');
+      const userIndex = mongoRoom.players.findIndex(player =>
+        player.user._id.equals(user.userId)
+      );
+      if (mongoRoom.stage === 2) {
+        const { error, gameOver } = await stage2({ mongoRoom, user, cards });
+        if (error) {
+          socket.emit('Error', { error });
+        }
+        if (gameOver) {
+          io.to(user.room).emit('Check DB');
+          io.to(user.room).emit('Game Over');
+          setTimeout(async () => {
+            endGame({ mongoRoom, userIndex });
+            if (mongoRoom.stage === 0) {
+              stage0(mongoRoom);
+            } else {
+              await mongoRoom.save();
+            }
+            io.to(user.room).emit('Game Restart');
+            io.to(user.room).emit('Check DB');
+          }, 2000);
+        }
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+    io.to(user.room).emit('Check DB');
   });
   //pass turn
   socket.on('Pass', async () => {
@@ -61,9 +105,25 @@ io.on('connect', async socket => {
     const user = getUser(socket.id);
     try {
       let mongoRoom = await Room.findById(user.room);
-      mongoRoom.turn += 1;
-      mongoRoom.turn %= MAX_USERS;
-      await mongoRoom.save();
+      if (mongoRoom.stage === 2) {
+        if (mongoRoom.previousPlayer == user.userId) {
+          mongoRoom.previousPlayer = null;
+          mongoRoom.combination = null;
+          mongoRoom.cardRank = -1;
+          mongoRoom.middle = [];
+        }
+        mongoRoom.turn += 1;
+        mongoRoom.turn %= MAX_USERS;
+        if (
+          mongoRoom.previousPlayer &&
+          mongoRoom.previousPlayer.equals(
+            mongoRoom.players[mongoRoom.turn].user
+          )
+        ) {
+          mongoRoom.middle = [];
+        }
+        await mongoRoom.save();
+      }
     } catch (err) {
       console.error(err.message);
     }

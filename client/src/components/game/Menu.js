@@ -1,15 +1,24 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { joinNextRoom } from '../../actions/game';
+import { joinNextRoom, leaveRoom } from '../../actions/game';
 import PropTypes from 'prop-types';
 
-const Menu = ({ joinNextRoom }) => {
+const Menu = ({ joinNextRoom, leaveRoom }) => {
+  useEffect(() => {
+    leaveRoom();
+  }, []);
+
   return (
     <Fragment>
       Menu Page
       <div>
-        <Link onClick={e => joinNextRoom()} to='/game/loading'>
+        <Link
+          onClick={e => {
+            joinNextRoom();
+          }}
+          to='/game/loading'
+        >
           Join Random Game
         </Link>
       </div>
@@ -26,5 +35,5 @@ Menu.propTypes = {
 
 export default connect(
   null,
-  { joinNextRoom }
+  { joinNextRoom, leaveRoom }
 )(Menu);

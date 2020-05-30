@@ -18,20 +18,40 @@ const RoomSchema = new mongoose.Schema({
       score: {
         type: Number,
         default: 0
+      },
+      landlord: {
+        type: Boolean,
+        default: false
       }
     }
   ],
+  previousPlayer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  cardRank: {
+    type: Number,
+    default: -1
+  },
+  combination: {
+    type: String,
+    default: 'Any'
+  },
   currentBid: {
     type: Number,
     default: 0
   },
   bidValue: {
     type: Number,
-    default: 2000
+    default: 0
   },
   previousPass: {
     type: Boolean,
     default: false
+  },
+  numPass: {
+    type: Number,
+    default: 0
   },
   playerCount: {
     type: Number,
@@ -52,6 +72,10 @@ const RoomSchema = new mongoose.Schema({
     default: 0
   },
   turn: {
+    type: Number,
+    default: 0
+  },
+  numGames: {
     type: Number,
     default: 0
   },
@@ -267,11 +291,11 @@ const RoomSchema = new mongoose.Schema({
         house: 'D'
       },
       {
-        value: 'Joker',
+        value: 'Joker Red',
         house: 'Red'
       },
       {
-        value: 'Joker',
+        value: 'Joker Black',
         house: 'Black'
       }
     ]
