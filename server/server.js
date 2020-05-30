@@ -20,9 +20,10 @@ const {
 } = require('./game');
 
 //todo: stage rendering
-//todo: stage 2 stuff
-//todo: stage 3 reset
-//todo: stage 4 redirect
+//sort cards - done
+//todo: stage 2 stuff mostly done but need to add all combos
+//todo: stage 3 reset - done
+//todo: stage 4 redirect - done
 //todo: timeout (afk)
 //todo: private games
 
@@ -41,8 +42,11 @@ io.on('connect', async socket => {
     if (getUsersInRoom(user.room).length === MAX_USERS) {
       try {
         let mongoRoom = await Room.findById(user.room).populate('players.user');
+        if (mongoRoom.stage === -1) {
+          mongoRoom.stage += 1;
+        }
         if (mongoRoom.stage === 0) {
-          stage0(mongoRoom);
+          await stage0(mongoRoom);
         }
       } catch (err) {
         console.error(err.message);
@@ -85,11 +89,17 @@ io.on('connect', async socket => {
           setTimeout(async () => {
             endGame({ mongoRoom, userIndex });
             if (mongoRoom.stage === 0) {
-              stage0(mongoRoom);
+              await stage0(mongoRoom);
+              io.to(user.room).emit('Game Restart');
             } else {
               await mongoRoom.save();
+              for (let i = 0; i < 3; i++) {
+                let user = User.findById(mongoRoom.players[i].user._id);
+                user.earning += mongoRoom.players[i].score * mongoRoom.bidValue;
+                await user.save();
+              }
+              io.to(user.room).emit('Redirect');
             }
-            io.to(user.room).emit('Game Restart');
             io.to(user.room).emit('Check DB');
           }, 2000);
         }
@@ -134,21 +144,39 @@ io.on('connect', async socket => {
     const user = getUser(socket.id);
     try {
       let mongoRoom = await Room.findById(user.room).populate('players.user');
-      mongoRoom.stage = 4;
-      mongoRoom.players.forEach((player, index) => {
-        if (player.user._id.equals(user.userId)) {
-          mongoRoom.players.splice(index, 1);
-          mongoRoom.playerCount -= 1;
+      const userIndex = mongoRoom.players.findIndex(player =>
+        player.user._id.equals(user.userId)
+      );
+      //leaving during game
+      if (
+        mongoRoom.numGames < 3 &&
+        mongoRoom.stage !== 4 &&
+        mongoRoom.stage !== -1
+      ) {
+        let mongoUser = await User.findById(user.userId);
+        //update the leaving user
+        if (mongoRoom.players[userIndex].score < 0) {
+          mongoUser.earning +=
+            mongoRoom.players[userIndex].score * mongoRoom.bidValue;
         }
-      });
-      //todo: go to each user and update earnings
-      //todo: if num games played is less than 3: penalize the user
+        mongoUser.earning = Math.floor(mongoUser.earning * 0.96);
+        await mongoUser.save();
+        mongoRoom.players.splice(userIndex, 1);
+        mongoRoom.playerCount -= 1;
+        //update the other users
+        for (let i = 0; i < 2; i++) {
+          let mongoUser2 = await User.findById(mongoRoom.players[i].user._id);
+          mongoUser2.earning += mongoRoom.players[i].score * mongoRoom.bidValue;
+          await mongoUser2.save();
+        }
+        io.to(user.room).emit('Redirect'); //will redirect back to menu in 5 seconds
+      }
+      mongoRoom.stage = 4;
       await mongoRoom.save();
     } catch (err) {
       console.error(err.message);
     }
     io.to(user.room).emit('Check DB');
-    io.to(user.room).emit('Redirect'); //will redirect back to menu in 5 seconds
   });
 
   socket.on('disconnect', () => {

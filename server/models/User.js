@@ -13,13 +13,7 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 50000
   },
-  wins: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ],
-  losses: [
+  opponents: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'

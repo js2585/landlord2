@@ -62,14 +62,15 @@ const RoomSchema = new mongoose.Schema({
     default: false
   },
   middle: [Object],
-  //stage 0: joining room
+  //stage -1: lobby
+  //stage 0: dealing
   //stage 1: bidding
   //stage 2: game
   //stage 3: reset
   //stage 4: end game
   stage: {
     type: Number,
-    default: 0
+    default: -1
   },
   turn: {
     type: Number,

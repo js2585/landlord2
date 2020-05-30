@@ -9,6 +9,23 @@ import queryString from 'query-string';
 //todo: determine what to show on each stage
 
 let socket;
+const ranking = [
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  'J',
+  'Q',
+  'K',
+  'A',
+  '2',
+  'Joker Black',
+  'Joker Red'
+];
 const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
   const ENDPOINT = 'http://localhost:5000';
   //hand
@@ -61,6 +78,12 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
         console.log('game restart');
         setGameOver(false);
       });
+      socket.on('Redirect', () => {
+        console.log('redirecting');
+        setTimeout(() => {
+          setExit(true);
+        }, 5000);
+      });
     }
   }, [ENDPOINT, auth]);
 
@@ -76,7 +99,14 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
       const turn = game.room.players.findIndex(
         player => player.user === auth.user._id
       );
-      setHand(game.room.players[turn].hand);
+      setHand(
+        game.room.players[turn].hand.sort((a, b) =>
+          ranking.findIndex(rank => a.value === rank) >
+          ranking.findIndex(rank => b.value === rank)
+            ? 1
+            : -1
+        )
+      );
       setTurn(game.room.turn);
       setStage(game.room.stage);
       setUserBidTurn(game.room.turn === turn && game.room.stage === 1);
@@ -95,6 +125,7 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
     return () => {
       leaveRoom();
       if (socket) {
+        socket.emit('Leave');
         socket.disconnect();
       }
     };
@@ -163,7 +194,6 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
 
   const leave = e => {
     e.preventDefault();
-    socket.emit('Leave');
     setExit(true);
   };
 

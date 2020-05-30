@@ -727,6 +727,8 @@ const stage1 = async ({ mongoRoom, user, bid }) => {
       await mongoRoom.save();
       return { error: null };
     }
+    //nobody has bid
+    mongoRoom.numPass += 1;
     //nobody has bid and user is last to bid
     if (mongoRoom.numPass >= 3) {
       reShuffle(mongoRoom);
@@ -735,7 +737,6 @@ const stage1 = async ({ mongoRoom, user, bid }) => {
       return { error: null };
     }
     //nobody has bid but user is not last to bid
-    mongoRoom.numPass += 1;
     increaseTurn(mongoRoom);
     await mongoRoom.save();
     return { error: null };
