@@ -103,12 +103,12 @@ const Board = ({
     if (privateRoom) {
       if ((!game.inGame || room !== game.room._id) && !game.loading) {
         joinRoom(room);
+        return;
       }
-    } else {
-      //When to redirect
-      if ((!game.inGame || room !== game.room._id) && !game.loading) {
-        setExit(true);
-      }
+    }
+    if ((!game.inGame || room !== game.room._id) && !game.loading) {
+      setExit(true);
+      return;
     }
     if (game.room) {
       const turn = game.room.players.findIndex(

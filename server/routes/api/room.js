@@ -80,7 +80,8 @@ router.post(
     [
       check('bidValue', 'Bid Value is Required')
         .not()
-        .isEmpty()
+        .isEmpty(),
+      check('bidValue', 'Bid Value Must Be a Number').isNumeric()
     ]
   ],
   async (req, res) => {

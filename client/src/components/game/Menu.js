@@ -18,6 +18,10 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
   const { bidValue } = formData;
   const hostClick = e => {
     e.preventDefault();
+    if (!user) {
+      setAlert('You Must Be Logged In To Host Game', 'danger');
+      return;
+    }
     setHost(!host);
   };
 
@@ -25,8 +29,30 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const randomGameClick = (e, bid) => {
+    if (!user) {
+      e.preventDefault();
+      setAlert('You Must Be Logged In To Play', 'danger');
+      return;
+    }
+    if (user.earning < bid * 18) {
+      e.preventDefault();
+      setAlert('You do not have enough money to play', 'danger');
+      return;
+    }
+    joinNextRoom(bid);
+  };
+
   const createGame = e => {
     e.preventDefault();
+    if (isNaN(bidValue)) {
+      setAlert('Bid Value Must Be a number', 'danger');
+      return;
+    }
+    if (bidValue < 0) {
+      setAlert('Bid Value must be greater than 0', 'danger');
+      return;
+    }
     if (user.earning < 7500) {
       setAlert('You do not have enough money to host a game', 'danger');
       return;
@@ -47,12 +73,7 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
       <div>
         <Link
           onClick={e => {
-            if (user.earning < 500 * 18) {
-              e.preventDefault();
-              setAlert('You do not have enough money to play', 'danger');
-              return;
-            }
-            joinNextRoom(500);
+            randomGameClick(e, 500);
           }}
           to='/game/loading'
         >
@@ -61,13 +82,9 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
       </div>
       <div>
         <Link
+          value={2000}
           onClick={e => {
-            if (user.earning < 2000 * 18) {
-              e.preventDefault();
-              setAlert('You do not have enough money to play', 'danger');
-              return;
-            }
-            joinNextRoom(2000);
+            randomGameClick(e, 2000);
           }}
           to='/game/loading'
         >
@@ -76,13 +93,9 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
       </div>
       <div>
         <Link
+          value={5000}
           onClick={e => {
-            if (user.earning < 5000 * 18) {
-              e.preventDefault();
-              setAlert('You do not have enough money to play', 'danger');
-              return;
-            }
-            joinNextRoom(5000);
+            randomGameClick(e, 5000);
           }}
           to='/game/loading'
         >
@@ -116,7 +129,7 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
 };
 
 Menu.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
   joinNextRoom: PropTypes.func.isRequired,
   leaveRoom: PropTypes.func.isRequired,
   setAlert: PropTypes.func.isRequired,
