@@ -10,6 +10,7 @@ import Rules from './components/game/Rules';
 import Board from './components/game/room/Board';
 import Loading from './components/game/Loading';
 import PrivateRoute from './components/routing/PrivateRoute';
+import PrivateLoading from './components/game/PrvateLoading';
 
 //redux
 import setAuthToken from './utils/setAuthToken';
@@ -39,6 +40,11 @@ function App() {
               <Route exact path='/menu' component={Menu} />
               <Route exact path='/rules' component={Rules} />
               <PrivateRoute exact path='/game/loading' component={Loading} />
+              <PrivateRoute
+                exact
+                path='/game/private/loading'
+                component={PrivateLoading}
+              />
               <PrivateRoute path='/board' component={Board} />
             </Switch>
           </Fragment>

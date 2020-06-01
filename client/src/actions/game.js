@@ -8,9 +8,9 @@ import {
 import axios from 'axios';
 import { loadUser } from './auth';
 
-export const joinNextRoom = () => async dispatch => {
+export const joinNextRoom = bidValue => async dispatch => {
   try {
-    const res = await axios.get('/api/room/join');
+    const res = await axios.get(`/api/room/join/${bidValue}`);
     const room = res.data;
     dispatch({ type: JOIN_ROOM_SUCCESS, payload: room });
     //load user because get request changes the user's room data
@@ -50,5 +50,37 @@ export const leaveRoom = () => async dispatch => {
     dispatch({
       type: ROOM_ERROR
     });
+  }
+};
+
+export const hostRoom = bidValue => async dispatch => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  const body = JSON.stringify({ bidValue });
+  try {
+    const res = await axios.post('/api/room', body, config);
+    const room = res.data;
+    console.log('Hosting');
+    dispatch(joinRoom(room._id));
+  } catch (err) {
+    dispatch({
+      type: ROOM_ERROR
+    });
+  }
+};
+
+export const joinRoom = roomId => async dispatch => {
+  try {
+    const res = await axios.get(`/api/room/join/private/${roomId}`);
+    const room = res.data;
+    console.log('Joining');
+    dispatch({ type: JOIN_ROOM_SUCCESS, payload: room });
+    //load user because get request changes the user's room data
+    dispatch(loadUser());
+  } catch (err) {
+    dispatch({ type: ROOM_ERROR });
   }
 };

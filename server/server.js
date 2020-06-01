@@ -20,12 +20,16 @@ const {
 } = require('./game');
 
 //todo: stage rendering
-//sort cards - done
+//todo: sort cards - done
 //todo: stage 2 stuff mostly done but need to add all combos
 //todo: stage 3 reset - done
 //todo: stage 4 redirect - done
 //todo: timeout (afk)
-//todo: private games
+//todo: private games - done
+//todo: different bid values - done
+//todo: donating and begging
+//todo: search for users
+//todo: refactor
 
 const MAX_USERS = 3;
 //socket logic
@@ -94,9 +98,12 @@ io.on('connect', async socket => {
             } else {
               await mongoRoom.save();
               for (let i = 0; i < 3; i++) {
-                let user = User.findById(mongoRoom.players[i].user._id);
-                user.earning += mongoRoom.players[i].score * mongoRoom.bidValue;
-                await user.save();
+                let mongoUser = await User.findById(
+                  mongoRoom.players[i].user._id
+                );
+                mongoUser.earning +=
+                  mongoRoom.players[i].score * mongoRoom.bidValue;
+                await mongoUser.save();
               }
               io.to(user.room).emit('Redirect');
             }
@@ -172,6 +179,7 @@ io.on('connect', async socket => {
         io.to(user.room).emit('Redirect'); //will redirect back to menu in 5 seconds
       }
       mongoRoom.stage = 4;
+      mongoRoom.full = true;
       await mongoRoom.save();
     } catch (err) {
       console.error(err.message);

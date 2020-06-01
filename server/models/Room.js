@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const RoomSchema = new mongoose.Schema({
+  private: {
+    type: Boolean,
+    default: false
+  },
   players: [
     {
       user: {

@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
-import { leaveRoom, loadRoom } from '../../../actions/game';
+import { leaveRoom, loadRoom, joinRoom } from '../../../actions/game';
 import { setAlert } from '../../../actions/alert';
 import { Redirect } from 'react-router-dom';
 import queryString from 'query-string';
@@ -26,7 +26,15 @@ const ranking = [
   'Joker Black',
   'Joker Red'
 ];
-const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
+const Board = ({
+  game,
+  auth,
+  leaveRoom,
+  location,
+  loadRoom,
+  setAlert,
+  joinRoom
+}) => {
   const ENDPOINT = 'http://localhost:5000';
   //hand
   const [hand, setHand] = useState([]);
@@ -89,11 +97,18 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
 
   //Room stuff update whenever game changes
   useEffect(() => {
-    const { room } = queryString.parse(location.search);
+    const { room, privateRoom } = queryString.parse(location.search);
     setRoom(room);
-    //When to redirect
-    if ((!game.inGame || room !== game.room._id) && !game.loading) {
-      setExit(true);
+    //if room is private then it's ok to not have game or roomid
+    if (privateRoom) {
+      if ((!game.inGame || room !== game.room._id) && !game.loading) {
+        joinRoom(room);
+      }
+    } else {
+      //When to redirect
+      if ((!game.inGame || room !== game.room._id) && !game.loading) {
+        setExit(true);
+      }
     }
     if (game.room) {
       const turn = game.room.players.findIndex(
@@ -114,7 +129,14 @@ const Board = ({ game, auth, leaveRoom, location, loadRoom, setAlert }) => {
       setStage(game.room.stage);
       setPlayers(game.room.players);
       setCurrentBid(game.room.currentBid);
-      setMiddle(game.room.middle);
+      setMiddle(
+        game.room.middle.sort((a, b) =>
+          ranking.findIndex(rank => a.value === rank) >
+          ranking.findIndex(rank => b.value === rank)
+            ? 1
+            : -1
+        )
+      );
       setRank(game.room.cardRank);
     }
   }, [location.search, game, auth]);
@@ -275,5 +297,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { leaveRoom, loadRoom, setAlert }
+  { leaveRoom, loadRoom, setAlert, joinRoom }
 )(Board);
