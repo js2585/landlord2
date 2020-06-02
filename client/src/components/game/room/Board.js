@@ -67,6 +67,7 @@ const Board = ({
 
   //socket stuff
   useEffect(() => {
+    let redirect;
     if (user && user.room) {
       socket = io(ENDPOINT);
       socket.emit('join', { userId: user._id, room: user.room });
@@ -88,10 +89,13 @@ const Board = ({
       });
       socket.on('Redirect', () => {
         console.log('redirecting');
-        setTimeout(() => {
+        redirect = setTimeout(() => {
           setExit(true);
         }, 5000);
       });
+      return () => {
+        clearTimeout(redirect);
+      };
     }
   }, [ENDPOINT, auth]);
 

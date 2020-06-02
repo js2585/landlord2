@@ -312,6 +312,911 @@ const getCombinationAndRank = cards => {
     }
     return { error: { msg: 'Not A Valid Combination' } };
   }
+  if (cards.length === 4) {
+    let frequency = {};
+    for (let i = 0; i < 4; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    for (const value in frequency) {
+      if (frequency[value] === 4) {
+        return { combination: 'Bomb', rank: value };
+      }
+      if (frequency[value] === 3) {
+        return { combination: 'Triplet Plus Single', rank: value };
+      }
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 5) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 2) {
+      for (const value in frequency) {
+        if (frequency[value] === 3) {
+          return { combination: 'Triplet Plus Pair', rank: value };
+        }
+      }
+      return { error: { msg: 'Not A Valid Combination' } };
+    }
+    if (numValues === 5) {
+      let values = [];
+      for (const value in frequency) {
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Straight Five', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 6) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 2) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] !== 3) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      if (getRank(values[1]) - 1 !== getRank(values[0])) {
+        return { error: { msg: 'Not A Valid Combination' } };
+      }
+      if (
+        values[1] === '2' ||
+        values[1] === 'Joker Black' ||
+        values[1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Triplet Straight Two', rank: values[0] };
+    }
+    if (numValues === 3) {
+      let values = [];
+      //check for four of a kind plus 2 singles
+      for (const value in frequency) {
+        if (frequency[value] === 4) {
+          for (const val in frequency) {
+            if (frequency[val] !== 1 && frequency[val] !== 4) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+          }
+          return {
+            combination: 'Four of A Kind Plus Two Singles',
+            rank: value
+          };
+        }
+      }
+      //check for straight pair
+      for (const value in frequency) {
+        if (frequency[value] !== 2) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Pair Straight Three', rank: values[0] };
+    }
+    //straight
+    if (numValues === 6) {
+      let values = [];
+      for (const value in frequency) {
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Straight Six', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 7) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 7) {
+      let values = [];
+      for (const value in frequency) {
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Straight Seven', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 8) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 4) {
+      let values = [];
+      let isThreeOfAKind = false;
+      for (const value in frequency) {
+        if (frequency[value] === 3) {
+          isThreeOfAKind = true;
+          for (const val in frequency) {
+            if (frequency[val] !== 3 && frequency[val] !== 1) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+            if (frequency[val] === 3) {
+              values.push(val);
+            }
+          }
+          break;
+        }
+        if (frequency[value] === 2) {
+          for (const val in frequency) {
+            if (frequency[val] !== 2) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+            values.push(val);
+          }
+          break;
+        }
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      if (isThreeOfAKind) {
+        return {
+          combination: 'Triplet Straight Plus A Pair Two',
+          rank: values[0]
+        };
+      }
+      return { combination: 'Pair Straight Four', rank: values[0] };
+    }
+    if (numValues === 3) {
+      for (const value in frequency) {
+        if (frequency[value] === 4) {
+          for (const val in frequency) {
+            if (frequency[val] !== 2 && frequency[val] !== 4) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+          }
+          return { combination: 'Four of a Kind Plus Two Pairs', rank: value };
+        }
+      }
+      return { error: { msg: 'Not A Valid Combination' } };
+    }
+    if (numValues === 8) {
+      let values = [];
+      for (const value in frequency) {
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Straight Eight', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 9) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 3) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] !== 3) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Triplet Straight Three', rank: values[0] };
+    }
+    if (numValues === 9) {
+      let values = [];
+      for (const value in frequency) {
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Straight Nine', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 10) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 4) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] === 3) {
+          values.push(value);
+        }
+        if (frequency[value] !== 3 && frequency[value] !== 2) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return {
+        combination: 'Triplet Straight Plus Two Pairs Two',
+        rank: values[0]
+      };
+    }
+    if (numValues === 5) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] !== 2) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Pair Straight Five', rank: values[0] };
+    }
+    if (numValues === 10) {
+      let values = [];
+      for (const value in frequency) {
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Straight Ten', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 11) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 11) {
+      let values = [];
+      for (const value in frequency) {
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Straight Eleven', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 12) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 6) {
+      let values = [];
+      let isThreeOfAKind = false;
+      for (const value in frequency) {
+        if (frequency[value] === 3) {
+          isThreeOfAKind = true;
+          for (const val in frequency) {
+            if (frequency[val] !== 3 && frequency[val] !== 1) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+            if (frequency[val] === 3) {
+              values.push(val);
+            }
+          }
+          break;
+        }
+        if (frequency[value] === 2) {
+          for (const val in frequency) {
+            if (frequency[val] !== 2) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+            values.push(val);
+          }
+          break;
+        }
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      if (isThreeOfAKind) {
+        return {
+          combination: 'Triplet Straight Plus A Pair Three',
+          rank: values[0]
+        };
+      }
+      return { combination: 'Pair Straight Six', rank: values[0] };
+    }
+    if (numValues === 4) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] !== 3) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Triplet Straight Four', rank: values[0] };
+    }
+    if (numValues === 12) {
+      let values = [];
+      for (const value in frequency) {
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Straight Twelve', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  //13 is impossible because straight ends at 12 cards (3,4,5,6,7,8,9,10,J,Q,K,A)
+  if (cards.length === 14) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 7) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] !== 2) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Pair Straight Seven', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 15) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 6) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] === 3) {
+          values.push(value);
+        }
+        if (frequency[value] !== 3 && frequency[value] !== 2) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return {
+        combination: 'Triplet Straight Plus Two Pairs Three',
+        rank: values[0]
+      };
+    }
+    if (numValues === 5) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] !== 3) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Triplet Straight Five', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  if (cards.length === 16) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 8) {
+      let values = [];
+      let isThreeOfAKind = false;
+      for (const value in frequency) {
+        if (frequency[value] === 3) {
+          isThreeOfAKind = true;
+          for (const val in frequency) {
+            if (frequency[val] !== 3 && frequency[val] !== 1) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+            if (frequency[val] === 3) {
+              values.push(val);
+            }
+          }
+          break;
+        }
+        if (frequency[value] === 2) {
+          for (const val in frequency) {
+            if (frequency[val] !== 2) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+            values.push(val);
+          }
+          break;
+        }
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      if (isThreeOfAKind) {
+        return {
+          combination: 'Triplet Straight Plus A Pair Four',
+          rank: values[0]
+        };
+      }
+      return { combination: 'Pair Straight Eight', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  //17 impossible
+  if (cards.length === 18) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 6) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] !== 3) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Triplet Straight Six', rank: values[0] };
+    }
+    if (numValues === 9) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] !== 2) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+        values.push(value);
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return { combination: 'Pair Straight Nine', rank: values[0] };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
+  //19 impossible
+  if (cards.length === 20) {
+    let frequency = {};
+    for (let i = 0; i < cards.length; i++) {
+      const val = cards[i].value;
+      if (!frequency[val]) {
+        frequency[val] = 1;
+      } else {
+        frequency[val] += 1;
+      }
+    }
+    let numValues = 0;
+    for (const value in frequency) {
+      numValues += 1;
+    }
+    if (numValues === 10) {
+      let values = [];
+      let isThreeOfAKind = false;
+      for (const value in frequency) {
+        if (frequency[value] === 3) {
+          isThreeOfAKind = true;
+          for (const val in frequency) {
+            if (frequency[val] !== 3 && frequency[val] !== 1) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+            if (frequency[val] === 3) {
+              values.push(val);
+            }
+          }
+          break;
+        }
+        if (frequency[value] === 2) {
+          for (const val in frequency) {
+            if (frequency[val] !== 2) {
+              return { error: { msg: 'Not A Valid Combination' } };
+            }
+            values.push(val);
+          }
+          break;
+        }
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      if (isThreeOfAKind) {
+        return {
+          combination: 'Triplet Straight Plus A Pair Five',
+          rank: values[0]
+        };
+      }
+      return { combination: 'Pair Straight Ten', rank: values[0] };
+    }
+    if (numValues === 8) {
+      let values = [];
+      for (const value in frequency) {
+        if (frequency[value] === 3) {
+          values.push(value);
+        }
+        if (frequency[value] !== 3 && frequency[value] !== 2) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      values.sort((a, b) => (getRank(a) > getRank(b) ? 1 : -1));
+      for (let i = 1; i < values.length; i++) {
+        if (getRank(values[i]) - 1 !== getRank(values[i - 1])) {
+          return { error: { msg: 'Not A Valid Combination' } };
+        }
+      }
+      if (
+        values[values.length - 1] === '2' ||
+        values[values.length - 1] === 'Joker Black' ||
+        values[values.length - 1] === 'Joker Red'
+      ) {
+        return { error: { msg: '2s and Jokers are not allowed in straights' } };
+      }
+      return {
+        combination: 'Triplet Straight Plus Two Pairs Four',
+        rank: values[0]
+      };
+    }
+    return { error: { msg: 'Not A Valid Combination' } };
+  }
   return { error: { msg: 'Not A Valid Combination' } };
 };
 
@@ -733,6 +1638,7 @@ const stage1 = async ({ mongoRoom, user, bid }) => {
     if (mongoRoom.numPass >= 3) {
       reShuffle(mongoRoom);
       increaseTurn(mongoRoom);
+      mongoRoom.numPass = 0;
       await mongoRoom.save();
       return { error: null };
     }
