@@ -40,7 +40,7 @@ const Navbar = ({ logout, auth: { user, isAuthenticated, loading } }) => {
     </ul>
   );
   return (
-    <nav>
+    <nav className='navbar bg-dark'>
       <h1>
         <Link to='/'>Beat the Landlord</Link>
       </h1>

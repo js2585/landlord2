@@ -32,21 +32,23 @@ function App() {
         <Router>
           <Fragment>
             <Navbar />
-            <Alert />
-            <Switch>
-              <Route exact path='/' component={Landing} />
-              <Route exact path='/register' component={Register} />
-              <Route exact path='/login' component={Login} />
-              <Route exact path='/menu' component={Menu} />
-              <Route exact path='/rules' component={Rules} />
-              <PrivateRoute exact path='/game/loading' component={Loading} />
-              <PrivateRoute
-                exact
-                path='/game/private/loading'
-                component={PrivateLoading}
-              />
-              <PrivateRoute path='/board' component={Board} />
-            </Switch>
+            <Route exact path='/' component={Landing} />
+            <section className='container'>
+              <Alert />
+              <Switch>
+                <Route exact path='/register' component={Register} />
+                <Route exact path='/login' component={Login} />
+                <Route exact path='/menu' component={Menu} />
+                <Route exact path='/rules' component={Rules} />
+                <PrivateRoute exact path='/game/loading' component={Loading} />
+                <PrivateRoute
+                  exact
+                  path='/game/private/loading'
+                  component={PrivateLoading}
+                />
+                <PrivateRoute path='/board' component={Board} />
+              </Switch>
+            </section>
           </Fragment>
         </Router>
       </Fragment>

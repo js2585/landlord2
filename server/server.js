@@ -21,7 +21,7 @@ const {
 
 //todo: stage rendering
 //todo: sort cards - done
-//todo: stage 2 stuff mostly done but need to add all combos
+//todo: stage 2 - done
 //todo: stage 3 reset - done
 //todo: stage 4 redirect - done
 //todo: timeout (afk)

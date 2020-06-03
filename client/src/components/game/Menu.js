@@ -68,63 +68,74 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
     return <Redirect to='/game/private/loading' />;
   }
   return (
-    <Fragment>
-      Menu Page
-      <div>
+    <section className='menu'>
+      <div className='menu-top'>
+        <p className='lead'>
+          Join a Random Public Game or Host Your Own Private Game
+        </p>
+      </div>
+      <div className='menu-buttons'>
+        <p>Join Random Game - Free</p>
         <Link
           onClick={e => {
             randomGameClick(e, 500);
           }}
           to='/game/loading'
+          className='btn btn-primary btn-large my'
         >
           Join $500 Game
         </Link>
-      </div>
-      <div>
         <Link
-          value={2000}
           onClick={e => {
             randomGameClick(e, 2000);
           }}
           to='/game/loading'
+          className='btn btn-primary btn-large my'
         >
           Join $2000 Game
         </Link>
-      </div>
-      <div>
         <Link
-          value={5000}
           onClick={e => {
             randomGameClick(e, 5000);
           }}
           to='/game/loading'
+          className='btn btn-primary btn-large my'
         >
           Join $5000 Game
         </Link>
       </div>
-      <div>
-        <Link to='/' onClick={e => hostClick(e)}>
+      <div className='menu-buttons'>
+        <p>Host Game - $7500</p>
+        <Link
+          to='/'
+          onClick={e => hostClick(e)}
+          className='btn btn-dark btn-large my'
+        >
           Host Game
         </Link>
+        {host ? (
+          <form onSubmit={e => createGame(e)} className='form'>
+            <div className='form-group'>
+              <input
+                type='text'
+                placeholder='Bid Value'
+                name='bidValue'
+                onChange={e => onChange(e)}
+                value={bidValue}
+                required
+              />
+            </div>
+            <div>
+              <input
+                className='btn btn-dark btn-medium'
+                type='submit'
+                value='Generate Game'
+              />
+            </div>
+          </form>
+        ) : null}
       </div>
-      {host ? (
-        <form onSubmit={e => createGame(e)}>
-          <div>
-            <input
-              type='text'
-              placeholder='Bid Value'
-              name='bidValue'
-              onChange={e => onChange(e)}
-              value={bidValue}
-              required
-            />
-          </div>
-          <div>
-            <input type='submit' value='Create Game' />
-          </div>
-        </form>
-      ) : null}
-    </Fragment>
+    </section>
   );
 };
 

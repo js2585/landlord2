@@ -54,6 +54,8 @@ const Board = ({
   const [players, setPlayers] = useState([]);
   //card rank
   const [rank, setRank] = useState(-1);
+  //combination
+  const [combination, setCombination] = useState('');
   //stage
   const [stage, setStage] = useState(-1);
   //gameended
@@ -142,6 +144,7 @@ const Board = ({
         )
       );
       setRank(game.room.cardRank);
+      setCombination(game.room.combination);
     }
   }, [location.search, game, auth]);
 
@@ -249,6 +252,7 @@ const Board = ({
         ))}
       </div>
       <div>Rank: {rank}</div>
+      <div>Combination: {combination}</div>
       <div>
         Cards:
         {cards.map((card, index) => (
