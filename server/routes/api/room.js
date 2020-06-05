@@ -105,7 +105,7 @@ router.post(
 );
 
 // @route   GET api/room/join/private/:id
-// @desc    create room with a certain bid value
+// @desc    join room with a certain id
 // @access  Private
 router.get('/join/private/:id', auth, async (req, res) => {
   try {
@@ -116,6 +116,11 @@ router.get('/join/private/:id', auth, async (req, res) => {
       return res
         .status(400)
         .json({ errors: [{ msg: 'Game is already full' }] });
+    }
+    if (user.earning < 0) {
+      return res
+        .status(400)
+        .json({ error: [{ msg: "You don't have enough money to play" }] });
     }
     user.room = room._id;
     await user.save();

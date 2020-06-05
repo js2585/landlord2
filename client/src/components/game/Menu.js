@@ -35,7 +35,7 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
       setAlert('You Must Be Logged In To Play', 'danger');
       return;
     }
-    if (user.earning < bid * 18) {
+    if (user.earning < 0) {
       e.preventDefault();
       setAlert('You do not have enough money to play', 'danger');
       return;
@@ -57,7 +57,7 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
       setAlert('You do not have enough money to host a game', 'danger');
       return;
     }
-    if (user.earning < bidValue * 18) {
+    if (user.earning < bidValue) {
       setAlert('The bid value of your game is too high', 'danger');
       return;
     }
@@ -75,13 +75,13 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
         </p>
       </div>
       <div className='menu-buttons'>
-        <p>Join Random Game - Free</p>
+        <h3>Join Random Game - Free</h3>
         <Link
           onClick={e => {
             randomGameClick(e, 500);
           }}
           to='/game/loading'
-          className='btn btn-primary btn-large my'
+          className='btn btn-primary max-width my'
         >
           Join $500 Game
         </Link>
@@ -90,7 +90,7 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
             randomGameClick(e, 2000);
           }}
           to='/game/loading'
-          className='btn btn-primary btn-large my'
+          className='btn btn-primary max-width my'
         >
           Join $2000 Game
         </Link>
@@ -99,17 +99,17 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
             randomGameClick(e, 5000);
           }}
           to='/game/loading'
-          className='btn btn-primary btn-large my'
+          className='btn btn-primary max-width my'
         >
           Join $5000 Game
         </Link>
       </div>
       <div className='menu-buttons'>
-        <p>Host Game - $7500</p>
+        <h3>Host Game - $7500</h3>
         <Link
           to='/'
           onClick={e => hostClick(e)}
-          className='btn btn-dark btn-large my'
+          className='btn btn-dark max-width my'
         >
           Host Game
         </Link>
@@ -127,13 +127,27 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
             </div>
             <div>
               <input
-                className='btn btn-dark btn-medium'
+                className='btn btn-dark max-width'
                 type='submit'
                 value='Generate Game'
               />
             </div>
           </form>
         ) : null}
+      </div>
+      <div className='menu-buttons'>
+        <div>
+          <h3>Important Notes</h3>
+          <ul>
+            <li className='menu-item'>
+              - Leaving a game once it has started will result in a 5% penalty
+            </li>
+            <li className='menu-item my'>
+              - There will be a 60 second timeout before the game assumes you
+              are AFK
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
   );

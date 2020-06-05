@@ -1,9 +1,9 @@
 /* Global Styles */
 :root {
-  --primary-color: #17a2b8;
+  --primary-color: #a40909;
   --dark-color: #343a40;
   --light-color: #f4f4f4;
-  --danger-color: #dc3545;
+  --danger-color: #a40909;
   --success-color: #28a745;
 }
 
@@ -14,7 +14,7 @@
 }
 
 body {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;
   font-size: 1rem;
   line-height: 1.6;
   background-color: #fff;
@@ -36,12 +36,16 @@ img {
 
 /* Utilities */
 .container {
-  max-width: 1100px;
+  /* max-width: 1100px; */
   margin: auto;
   overflow: hidden;
   padding: 0 2rem;
   margin-top: 6rem;
   margin-bottom: 3rem;
+}
+
+.max-width {
+  width: 100%;
 }
 
 /* Text Styles*/
@@ -135,7 +139,7 @@ img {
   border: none;
   cursor: pointer;
   margin-right: 0.5rem;
-  transition: opacity 0.2s ease-in;
+  margin-left: 0.5rem;
   outline: none;
   border-radius: 0.5rem;
 }
@@ -152,7 +156,7 @@ img {
 .alert {
   padding: 0.8rem;
   margin: 1rem 0;
-  opacity: 0.9;
+  opacity: 0.8;
   background: var(--light-color);
   color: #333;
 }
@@ -216,6 +220,10 @@ img {
 
 .btn-large {
   width: 15rem;
+}
+
+.btn-block {
+  opacity: 0.8;
 }
 
 .btn:hover {
@@ -336,7 +344,8 @@ button {
 }
 
 .navbar a:hover {
-  color: var(--primary-color);
+  /* color: var(--primary-color); */
+  opacity: 0.8;
 }
 
 .navbar .welcome span {
@@ -361,6 +370,27 @@ button {
   justify-content: center;
   text-align: center;
 }
+
+.about {
+  margin: auto;
+  color: var(--dark-color);
+  text-align: center;
+  width: 80%;
+}
+/* Login Page */
+.login {
+  position: relative;
+  margin: 2px auto;
+  width: 30%;
+  padding: 2%;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 2px #333;
+}
+/* Rules Page */
+.rules {
+  width: 80%;
+  margin: auto;
+}
 /* Menu Page */
 .menu {
   position: relative;
@@ -368,24 +398,79 @@ button {
   /* border: black 2px solid; */
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   align-content: flex-start;
   text-align: center;
 }
 
 .menu-buttons {
   display: flex;
-  height: 40%;
+  height: 45%;
   flex-direction: column;
-  width: 50%;
+  box-shadow: 0 0 2px #333;
+  width: 30%;
   align-items: center;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
   /* border: black 2px solid; */
+}
+
+.menu-item {
+  text-align: left;
+  padding: 0 0.5rem;
 }
 
 .menu-top {
   height: 20%;
   width: 100%;
   /* border: black 2px solid; */
+}
+
+/* Game Page */
+.game {
+  display: flex;
+  height: 100vh;
+}
+
+.game-panel {
+  width: 20%;
+  height: 80%;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 0 2px #333;
+  border-radius: 0.5rem;
+}
+
+.game-table {
+  width: 75%;
+  height: 80%;
+  margin: 0.5rem;
+  background: #057e04;
+  border-radius: 0.5rem;
+}
+
+.game-buttons {
+  height: 10%;
+  margin: 0.5rem 0;
+  border: solid 1px black;
+  display: flex;
+  justify-content: center;
+}
+
+.game-middle {
+  height: 30%;
+  border: solid 1px black;
+  margin: 6rem 0 0 0;
+}
+
+.game-hand {
+  height: 20%;
+  margin: 2rem 0;
+  border: solid 1px black;
+}
+
+.landlord {
+  color: var(--primary-color);
 }
 
 /* Profiles Page */

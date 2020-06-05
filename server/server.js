@@ -166,7 +166,7 @@ io.on('connect', async socket => {
           mongoUser.earning +=
             mongoRoom.players[userIndex].score * mongoRoom.bidValue;
         }
-        mongoUser.earning = Math.floor(mongoUser.earning * 0.96);
+        mongoUser.earning = Math.floor(mongoUser.earning * 0.95);
         await mongoUser.save();
         mongoRoom.players.splice(userIndex, 1);
         mongoRoom.playerCount -= 1;

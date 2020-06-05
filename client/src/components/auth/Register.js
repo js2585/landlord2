@@ -29,8 +29,8 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
     return <Redirect to='/menu' />;
   }
   return (
-    <Fragment>
-      <h1 className='large text-primary'>Register</h1>
+    <div className='login'>
+      <h1 className='large text-primary text-center'>Register</h1>
       <form className='form' onSubmit={e => onSubmit(e)}>
         <div className='form-group'>
           Username:
@@ -66,13 +66,17 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
           />
         </div>
         <div>
-          <input className='btn btn-primary' type='submit' value='Register' />
+          <input
+            className='btn btn-primary max-width'
+            type='submit'
+            value='Register'
+          />
         </div>
       </form>
       <p className='my-1'>
         Have an Account? <Link to='/login'>Login</Link>
       </p>
-    </Fragment>
+    </div>
   );
 };
 

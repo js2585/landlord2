@@ -24,8 +24,8 @@ const Login = ({ login, isAuthenticated }) => {
     return <Redirect to='/menu' />;
   }
   return (
-    <Fragment>
-      <h1 className='large text-primary'>Log In</h1>
+    <div className='login'>
+      <h1 className='large text-primary text-center'>Log In</h1>
       <form className='form' onSubmit={e => onSubmit(e)}>
         <div className='form-group'>
           Username:
@@ -50,13 +50,17 @@ const Login = ({ login, isAuthenticated }) => {
           />
         </div>
         <div>
-          <input className='btn btn-primary' type='submit' value='Login' />
+          <input
+            className='btn btn-primary max-width'
+            type='submit'
+            value='Login'
+          />
         </div>
       </form>
       <p className='my-1'>
         Need an Account? <Link to='/register'>Register</Link>
       </p>
-    </Fragment>
+    </div>
   );
 };
 

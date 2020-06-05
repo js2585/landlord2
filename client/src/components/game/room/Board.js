@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { leaveRoom, loadRoom, joinRoom } from '../../../actions/game';
 import { setAlert } from '../../../actions/alert';
 import { Redirect } from 'react-router-dom';
+import Panel from './Panel';
+import Table from './Table';
 import queryString from 'query-string';
 
 //todo: determine what to show on each stage
@@ -60,6 +62,8 @@ const Board = ({
   const [stage, setStage] = useState(-1);
   //gameended
   const [gameOver, setGameOver] = useState(false);
+  //bidValue
+  const [roomData, setRoomData] = useState({});
   //room info
   const [room, setRoom] = useState('');
   //determines redirect
@@ -145,6 +149,7 @@ const Board = ({
       );
       setRank(game.room.cardRank);
       setCombination(game.room.combination);
+      setRoomData(game.room);
     }
   }, [location.search, game, auth]);
 
@@ -188,18 +193,19 @@ const Board = ({
   };
   //bidding
   //passing turn
-  const bid = e => {
+  const bid = (e, value) => {
     e.preventDefault();
     if (!userBidTurn) {
+      setAlert('Not Your Turn To Bid', 'danger');
       return;
     }
-    socket.emit('Bid', { bid: e.target.value });
+    socket.emit('Bid', { bid: value });
   };
   //playing cards
   const playCards = e => {
     e.preventDefault();
     if (!userTurn) {
-      setAlert('Not Your Turn', 'danger');
+      setAlert('Not Your Turn To Play', 'danger');
       return;
     }
     if (cards.length <= 0 || !cards) {
@@ -227,23 +233,10 @@ const Board = ({
   };
 
   return (
-    <Fragment>
-      Game room
-      <button onClick={e => leave(e)}>Leave</button>
-      <div>{gameOver ? <strong>Game Over</strong> : null}</div>
-      <div>
-        Users:
-        {players.map((player, index) => (
-          <li key={index}>
-            {player.username} : bidding {player.bid} : Landlord :
-            {player.landlord ? <span>Yes</span> : <span>No</span>} : Score :{' '}
-            {player.score}
-          </li>
-        ))}
-      </div>
-      <div>Current Bid: {currentBid}</div>
-      <div>Stage: {stage}</div>
-      <div>
+    <div className='game'>
+      <Panel setExit={setExit} roomData={roomData} />
+      <Table roomData={roomData} hand={hand} cards={cards} middle={middle} handClick={handClick} bid={bid} pass={pass} playCards={playCards}/>
+      {/* <div>
         Middle:
         {middle.map((card, index) => (
           <li key={index} value={index}>
@@ -251,8 +244,6 @@ const Board = ({
           </li>
         ))}
       </div>
-      <div>Rank: {rank}</div>
-      <div>Combination: {combination}</div>
       <div>
         Cards:
         {cards.map((card, index) => (
@@ -261,27 +252,16 @@ const Board = ({
           </li>
         ))}
       </div>
-      <div>Game Turn: {gameTurn}</div>
-      {userTurn ? (
-        <div>Your Turn to Play</div>
-      ) : (
-        <div>Not Your Turn to Play</div>
-      )}
-      {userBidTurn ? (
-        <div>Your Turn to Bid</div>
-      ) : (
-        <div>Not Your Turn to Bid</div>
-      )}
-      <button onClick={e => bid(e)} value={0}>
+      <button onClick={e => bid(e, 0)}>
         Pass
       </button>
-      <button onClick={e => bid(e)} value={1}>
+      <button onClick={e => bid(e, 1)}>
         1
       </button>
-      <button onClick={e => bid(e)} value={2}>
+      <button onClick={e => bid(e, 2)}>
         2
       </button>
-      <button onClick={e => bid(e)} value={3}>
+      <button onClick={e => bid(e, 3)}>
         3
       </button>
       <button onClick={e => playCards(e)}>Play Cards</button>
@@ -293,8 +273,8 @@ const Board = ({
             {card.value} {card.house}
           </li>
         ))}
-      </div>
-    </Fragment>
+      </div> */}
+    </div>
   );
 };
 
