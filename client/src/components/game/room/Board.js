@@ -52,6 +52,8 @@ const Board = ({
   const [roomData, setRoomData] = useState({});
   //determines redirect
   const [exit, setExit] = useState(false);
+  //if redirected
+  const [redirected, setRedirected] = useState(false);
   //User stuff
   const { user } = auth;
 
@@ -71,9 +73,12 @@ const Board = ({
       });
       socket.on('Redirect', () => {
         console.log('redirecting');
-        redirect = setTimeout(() => {
-          setExit(true);
-        }, 5000);
+        setRedirected(true);
+        setExit(true);
+      });
+      socket.on('AFK', () => {
+        console.log('AFK');
+        setExit(true);
       });
       return () => {
         clearTimeout(redirect);
@@ -121,19 +126,32 @@ const Board = ({
     }
   }, [location.search, game, auth]);
 
+  useEffect(() => {
+    if ((userTurn || userBidTurn) && socket) {
+      console.log('starting countdown');
+      socket.emit('Start Countdown');
+    }
+    if (!userTurn && !userBidTurn && socket) {
+      console.log('stopping countdown');
+      socket.emit('Stop Countdown');
+    }
+  }, [userTurn, userBidTurn]);
+
   //disconnect
   useEffect(() => {
     //cleanup on dismount
     return () => {
       leaveRoom();
       if (socket) {
-        socket.emit('Leave');
         socket.disconnect();
       }
     };
   }, []);
 
   if (exit) {
+    if (!redirected && socket) {
+      socket.emit('Leave');
+    }
     return <Redirect to='/menu' />;
   }
   //if card is not in cards, it will go into cards. if it is, it will go out
@@ -206,6 +224,7 @@ const Board = ({
         bid={bid}
         pass={pass}
         playCards={playCards}
+        userTurn={userTurn}
       />
     </div>
   );

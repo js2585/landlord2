@@ -25,7 +25,7 @@ const addUser = ({ socketId, userId, room }) => {
     users[userIndex].room = room;
     return { user: users[userIndex] };
   }
-  const user = { socketId, userId, room };
+  const user = { socketId, userId, room, countDown: null };
   users.push(user);
   return { user };
 };

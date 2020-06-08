@@ -84,6 +84,10 @@ const RoomSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  userLeft: {
+    type: Boolean,
+    default: false
+  },
   deck: {
     type: Array,
     default: [

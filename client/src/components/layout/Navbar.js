@@ -7,14 +7,18 @@ import PropTypes from 'prop-types';
 const Navbar = ({ logout, auth: { user, isAuthenticated, loading } }) => {
   const authLinks = (
     <ul>
+      <li className='mx'>
+        {user ? (
+          <div>
+            {user.username} - ${user.earning.toLocaleString()}
+          </div>
+        ) : null}
+      </li>
       <li>
         <Link to='/menu'>Menu</Link>
       </li>
       <li>
         <Link to='/rules'>Rules</Link>
-      </li>
-      <li>
-        <Link to='/'>{user ? user.username : null}</Link>
       </li>
       <li>
         <a onClick={logout} href='/'>
@@ -41,9 +45,11 @@ const Navbar = ({ logout, auth: { user, isAuthenticated, loading } }) => {
   );
   return (
     <nav className='navbar bg-dark'>
+    <div className='brand'><img src={require('../../img/logo.png')} style={{maxWidth: '50px', maxHeight: '50px', height: 'auto', width: 'auto', objectFit: 'contain'}}/>
       <h1>
-        <Link to='/'>Beat the Landlord</Link>
-      </h1>
+        <Link to='/'>Fight the Landlord</Link>
+      </h1></div>
+      
       {!loading ? (
         <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
       ) : null}

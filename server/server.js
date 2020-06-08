@@ -58,6 +58,20 @@ io.on('connect', async socket => {
     }
     io.to(user.room).emit('Check DB');
   });
+  //countdown to afk
+  socket.on('Start Countdown', () => {
+    let user = getUser(socket.id);
+    user.countDown = setTimeout(() => {
+      socket.emit('Error', { error: { msg: 'You took too long' } });
+      socket.emit('AFK');
+    }, 10000);
+  });
+  socket.on('Stop Countdown', () => {
+    let user = getUser(socket.id);
+    if (user.countDown) {
+      clearTimeout(user.countDown);
+    }
+  });
   //bidding
   socket.on('Bid', async ({ bid }) => {
     const user = getUser(socket.id);
@@ -103,7 +117,9 @@ io.on('connect', async socket => {
                   mongoRoom.players[i].score * mongoRoom.bidValue;
                 await mongoUser.save();
               }
-              io.to(user.room).emit('Redirect');
+              setTimeout(() => {
+                io.to(user.room).emit('Redirect');
+              }, 5000);
             }
             io.to(user.room).emit('Check DB');
           }, 2000);
@@ -174,11 +190,18 @@ io.on('connect', async socket => {
           mongoUser2.earning += mongoRoom.players[i].score * mongoRoom.bidValue;
           await mongoUser2.save();
         }
-        io.to(user.room).emit('Redirect'); //will redirect back to menu in 5 seconds
+      }
+      if (mongoRoom.stage === -1) {
+        mongoRoom.players.splice(userIndex, 1);
+        mongoRoom.playerCount -= 1;
       }
       mongoRoom.stage = 4;
+      mongoRoom.userLeft = true;
       mongoRoom.full = true;
       await mongoRoom.save();
+      setTimeout(() => {
+        io.to(user.room).emit('Redirect'); //will redirect back to menu in 5 seconds
+      }, 5000);
     } catch (err) {
       console.error(err.message);
     }

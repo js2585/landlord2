@@ -379,6 +379,12 @@ button {
   margin-right: 0.6rem;
 }
 
+.brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Landing Page */
 .landing {
   position: relative;
@@ -472,22 +478,28 @@ button {
   width: 75%;
   height: 80%;
   margin: 0.5rem;
-  background: #057e04;
+  background: rgb(5, 126, 4);
+  background: linear-gradient(
+    90deg,
+    rgba(5, 126, 4, 1) 15%,
+    rgba(74, 180, 4, 1) 50%,
+    rgba(5, 126, 4, 1) 85%
+  );
   border-radius: 0.5rem;
 }
 
 .game-buttons {
   height: 10%;
-  margin: 0.5rem 0;
-  border: solid 1px black;
+  margin: 2rem 0 0 0;
+  /* border: solid 1px black; */
   display: flex;
   justify-content: center;
 }
 
 .game-middle {
   height: 30%;
-  border: solid 1px black;
-  margin: 6rem 0 0 0;
+  /* border: solid 1px black; */
+  margin: 2rem 0 0 0;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -495,11 +507,19 @@ button {
 
 .game-hand {
   height: 20%;
-  margin: 2rem 0;
-  border: solid 1px black;
+  margin: 1rem 0;
+  /* border: solid 1px black; */
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.game-banner {
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  /* border: solid 1px black; */
+  color: #fff;
 }
 
 .landlord {

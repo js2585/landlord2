@@ -8,7 +8,8 @@ const Table = ({
   handClick,
   bid,
   pass,
-  playCards
+  playCards,
+  userTurn
 }) => {
   const checkCards = (value, house) => {
     if (cards.find(card => card.value === value && card.house === house)) {
@@ -16,15 +17,54 @@ const Table = ({
     }
     return 'none';
   };
+
   return (
     <div className='game-table'>
+      <div className='game-banner'>
+        {roomData.players && (roomData.stage === 1 || roomData.stage === 2) ? (
+          <div>
+            {roomData.players.map((player, index) =>
+              index === roomData.turn ? (
+                <h1 className='lead py' key={index}>
+                  {player.username}'s turn
+                </h1>
+              ) : null
+            )}
+          </div>
+        ) : null}
+        {roomData.stage === 3 ? (
+          <h1 className='lead py'>Round {roomData.numGames} Over ...</h1>
+        ) : null}
+        {roomData.stage === 4 && !roomData.userLeft ? (
+          <h1 className='lead py'>Game Over</h1>
+        ) : null}
+        {roomData.stage === 4 && roomData.userLeft ? (
+          <h1 className='lead py'>A Player Has Left the Game</h1>
+        ) : null}
+      </div>
       <div className='game-middle'>
-        {middle
+        {middle && roomData.stage > 1
           ? middle.map((card, index) => (
               <img
                 alt={`${card.value} ${card.house}`}
                 key={index}
                 src={require(`../../../img/cards/${card.value}${card.house}.png`)}
+                style={{
+                  maxWidth: `${100 / middle.length}%`,
+                  maxHeight: '100%',
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain'
+                }}
+              />
+            ))
+          : null}
+        {middle && roomData.stage <= 1
+          ? middle.map((card, index) => (
+              <img
+                alt='Card Back'
+                key={index}
+                src={require(`../../../img/cards/CardBack.png`)}
                 style={{
                   maxWidth: `${100 / middle.length}%`,
                   maxHeight: '100%',
@@ -79,35 +119,32 @@ const Table = ({
         </div>
       ) : null}
       {roomData.stage === 2 ? (
-        <div>
-          <div className='game-buttons'>
-            <button
-              className='btn btn-dark mx'
-              onClick={e => {
-                pass(e);
-              }}
-            >
-              Pass
-            </button>
-            {cards.length > 0 ? (
+        <div className='game-buttons'>
+          {userTurn ? (
+            <div>
               <button
-                className='btn btn-primary mx'
+                className='btn btn-dark mx'
                 onClick={e => {
-                  playCards(e);
+                  pass(e);
                 }}
               >
-                Play Cards
+                Pass
               </button>
-            ) : null}
-          </div>
+              {cards.length > 0 ? (
+                <button
+                  className='btn btn-primary mx'
+                  onClick={e => {
+                    playCards(e);
+                  }}
+                >
+                  Play Cards
+                </button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       ) : null}
-      {roomData.stage === 3 || roomData.stage === 4 ? (
-        <div className='game-buttons'>
-          <button className='btn btn-dark btn-block'>Pass</button>
-          <button className='btn btn-primary btn-block'>Play Cards</button>
-        </div>
-      ) : null}
+      {roomData.stage === 4 ? <div className='game-buttons'></div> : null}
       <div className='game-hand'>
         {hand
           ? hand.map((card, index) => (
