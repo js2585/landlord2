@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
 
 const Rules = () => {
   return (
@@ -83,6 +82,7 @@ const Rules = () => {
           Those are the common combinations but the full list can be found{' '}
           <a
             target='_blank'
+            rel='noopener noreferrer'
             href='https://en.wikipedia.org/wiki/Dou_dizhu#Category_of_hands'
           >
             here

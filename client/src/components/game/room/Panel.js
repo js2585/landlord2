@@ -9,7 +9,7 @@ const Panel = ({ setExit, roomData }) => {
         {roomData.players
           ? roomData.players.map((player, index) =>
               index === roomData.turn ? (
-                <strong>{player.username}'s turn</strong>
+                <strong key={index}>{player.username}'s turn</strong>
               ) : null
             )
           : null}
@@ -32,7 +32,7 @@ const Panel = ({ setExit, roomData }) => {
         {roomData.players
           ? roomData.players.map((player, index) =>
               index === roomData.turn ? (
-                <strong>{player.username}'s turn</strong>
+                <strong key={index}>{player.username}'s turn</strong>
               ) : null
             )
           : null}
@@ -62,18 +62,22 @@ const Panel = ({ setExit, roomData }) => {
       <h3>Current Bid: {roomData.currentBid}</h3>
       <h3>Scoreboard:</h3>
       <ul>
-        {roomData.players
-          ? roomData.players.map((player, index) => (
+        {roomData.players ? (
+          <div>
+            {roomData.players.map((player, index) => (
               <li key={index}>
                 {player.username} : {player.score}
               </li>
-            ))
-          : null}
+            ))}
+            {roomData.stage === -1 ? <i>Waiting for more players ...</i> : null}
+          </div>
+        ) : null}
       </ul>
       <hr />
       {roomData.stage === 1 ? biddingData : null}
       {roomData.stage === 2 ? gameData : null}
       <Link
+        to='/menu'
         onClick={e => {
           e.preventDefault();
           setExit(true);

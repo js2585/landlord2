@@ -13,10 +13,10 @@ const Landing = () => {
               earnings
             </p>
             <div>
-              <Link to='/register' className='btn btn-primary'>
+              <Link to='/register' className='btn btn-primary m'>
                 Register
               </Link>
-              <Link to='/login' className='btn btn-light'>
+              <Link to='/login' className='btn btn-light m'>
                 Login
               </Link>
             </div>

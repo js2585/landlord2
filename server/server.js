@@ -89,12 +89,10 @@ io.on('connect', async socket => {
         }
         if (gameOver) {
           io.to(user.room).emit('Check DB');
-          io.to(user.room).emit('Game Over');
           setTimeout(async () => {
             endGame({ mongoRoom, userIndex });
             if (mongoRoom.stage === 0) {
               await stage0(mongoRoom);
-              io.to(user.room).emit('Game Restart');
             } else {
               await mongoRoom.save();
               for (let i = 0; i < 3; i++) {

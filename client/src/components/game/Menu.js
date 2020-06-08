@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { joinNextRoom, leaveRoom, hostRoom } from '../../actions/game';
@@ -35,9 +35,19 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
       setAlert('You Must Be Logged In To Play', 'danger');
       return;
     }
-    if (user.earning < 0) {
+    if (bid === 2000 && user.earning < 20000) {
       e.preventDefault();
-      setAlert('You do not have enough money to play', 'danger');
+      setAlert('You must have at least $20,000 to play', 'danger');
+      return;
+    }
+    if (bid === 5000 && user.earning < 45000) {
+      e.preventDefault();
+      setAlert('You must have at least $45,000 to play', 'danger');
+      return;
+    }
+    if (bid === 10000 && user.earning < 100000) {
+      e.preventDefault();
+      setAlert('You must have at least $100,000 to play', 'danger');
       return;
     }
     joinNextRoom(bid);
@@ -92,7 +102,7 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
           to='/game/loading'
           className='btn btn-primary max-width my'
         >
-          Join $2000 Game
+          Join $2,000 Game
         </Link>
         <Link
           onClick={e => {
@@ -101,11 +111,20 @@ const Menu = ({ joinNextRoom, leaveRoom, user, setAlert, hostRoom }) => {
           to='/game/loading'
           className='btn btn-primary max-width my'
         >
-          Join $5000 Game
+          Join $5,000 Game
+        </Link>
+        <Link
+          onClick={e => {
+            randomGameClick(e, 10000);
+          }}
+          to='/game/loading'
+          className='btn btn-primary max-width my'
+        >
+          Join $10,000 Game
         </Link>
       </div>
       <div className='menu-buttons'>
-        <h3>Host Game - $7500</h3>
+        <h3>Host Game - $7,500</h3>
         <Link
           to='/'
           onClick={e => hostClick(e)}

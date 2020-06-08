@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import { leaveRoom, loadRoom, joinRoom } from '../../../actions/game';
@@ -42,30 +42,14 @@ const Board = ({
   const [hand, setHand] = useState([]);
   //cards about to be played
   const [cards, setCards] = useState([]);
-  //game turn
-  const [gameTurn, setTurn] = useState(-1);
   //user's turn
   const [userTurn, setUserTurn] = useState(false);
   //user bid turn
   const [userBidTurn, setUserBidTurn] = useState(false);
-  //current bid
-  const [currentBid, setCurrentBid] = useState(-1);
   //middle
   const [middle, setMiddle] = useState([]);
-  //players
-  const [players, setPlayers] = useState([]);
-  //card rank
-  const [rank, setRank] = useState(-1);
-  //combination
-  const [combination, setCombination] = useState('');
-  //stage
-  const [stage, setStage] = useState(-1);
-  //gameended
-  const [gameOver, setGameOver] = useState(false);
-  //bidValue
+  //room data
   const [roomData, setRoomData] = useState({});
-  //room info
-  const [room, setRoom] = useState('');
   //determines redirect
   const [exit, setExit] = useState(false);
   //User stuff
@@ -85,14 +69,6 @@ const Board = ({
         console.log(error);
         setAlert(error.msg, 'danger');
       });
-      socket.on('Game Over', () => {
-        console.log('game over');
-        setGameOver(true);
-      });
-      socket.on('Game Restart', () => {
-        console.log('game restart');
-        setGameOver(false);
-      });
       socket.on('Redirect', () => {
         console.log('redirecting');
         redirect = setTimeout(() => {
@@ -108,7 +84,6 @@ const Board = ({
   //Room stuff update whenever game changes
   useEffect(() => {
     const { room, privateRoom } = queryString.parse(location.search);
-    setRoom(room);
     //if room is private then it's ok to not have game or roomid
     if (privateRoom) {
       if ((!game.inGame || room !== game.room._id) && !game.loading) {
@@ -132,13 +107,8 @@ const Board = ({
             : -1
         )
       );
-      setTurn(game.room.turn);
-      setStage(game.room.stage);
       setUserBidTurn(game.room.turn === turn && game.room.stage === 1);
       setUserTurn(game.room.turn === turn && game.room.stage === 2);
-      setStage(game.room.stage);
-      setPlayers(game.room.players);
-      setCurrentBid(game.room.currentBid);
       setMiddle(
         game.room.middle.sort((a, b) =>
           ranking.findIndex(rank => a.value === rank) >
@@ -147,8 +117,6 @@ const Board = ({
             : -1
         )
       );
-      setRank(game.room.cardRank);
-      setCombination(game.room.combination);
       setRoomData(game.room);
     }
   }, [location.search, game, auth]);
@@ -169,25 +137,24 @@ const Board = ({
     return <Redirect to='/menu' />;
   }
   //if card is not in cards, it will go into cards. if it is, it will go out
-  const handClick = e => {
+  const handClick = (e, index) => {
     e.preventDefault();
     if (userTurn) {
       if (
         cards.find(
           card =>
-            card.value === hand[e.target.value].value &&
-            card.house === hand[e.target.value].house
+            card.value === hand[index].value && card.house === hand[index].house
         )
       ) {
         setCards(
           cards.filter(
             card =>
-              card.value !== hand[e.target.value].value ||
-              card.house !== hand[e.target.value].house
+              card.value !== hand[index].value ||
+              card.house !== hand[index].house
           )
         );
       } else {
-        setCards([...cards, hand[e.target.value]]);
+        setCards([...cards, hand[index]]);
       }
     }
   };
@@ -227,53 +194,19 @@ const Board = ({
     socket.emit('Pass');
   };
 
-  const leave = e => {
-    e.preventDefault();
-    setExit(true);
-  };
-
   return (
     <div className='game'>
       <Panel setExit={setExit} roomData={roomData} />
-      <Table roomData={roomData} hand={hand} cards={cards} middle={middle} handClick={handClick} bid={bid} pass={pass} playCards={playCards}/>
-      {/* <div>
-        Middle:
-        {middle.map((card, index) => (
-          <li key={index} value={index}>
-            {card.value} {card.house}
-          </li>
-        ))}
-      </div>
-      <div>
-        Cards:
-        {cards.map((card, index) => (
-          <li key={index} value={index}>
-            {card.value} {card.house}
-          </li>
-        ))}
-      </div>
-      <button onClick={e => bid(e, 0)}>
-        Pass
-      </button>
-      <button onClick={e => bid(e, 1)}>
-        1
-      </button>
-      <button onClick={e => bid(e, 2)}>
-        2
-      </button>
-      <button onClick={e => bid(e, 3)}>
-        3
-      </button>
-      <button onClick={e => playCards(e)}>Play Cards</button>
-      <button onClick={e => pass(e)}>Pass</button>
-      <div>
-        Hand:
-        {hand.map((card, index) => (
-          <li key={index} value={index} onClick={e => handClick(e)}>
-            {card.value} {card.house}
-          </li>
-        ))}
-      </div> */}
+      <Table
+        roomData={roomData}
+        hand={hand}
+        cards={cards}
+        middle={middle}
+        handClick={handClick}
+        bid={bid}
+        pass={pass}
+        playCards={playCards}
+      />
     </div>
   );
 };

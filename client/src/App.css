@@ -30,6 +30,10 @@ ul {
   list-style: none;
 }
 
+li {
+  list-style: none;
+}
+
 img {
   width: 100%;
 }
@@ -46,6 +50,7 @@ img {
 
 .max-width {
   width: 100%;
+  margin: 0;
 }
 
 /* Text Styles*/
@@ -91,6 +96,18 @@ img {
 .p-3 {
   padding: 3rem;
 }
+.px {
+  padding: 0 0.5rem;
+}
+.px-1 {
+  padding: 0 1rem;
+}
+.px-2 {
+  padding: 0 2rem;
+}
+.px-3 {
+  padding: 0 3rem;
+}
 .py {
   padding: 0.5rem 0;
 }
@@ -117,6 +134,18 @@ img {
 .m-3 {
   margin: 3rem;
 }
+.mx {
+  margin: 0 0.5rem;
+}
+.mx-1 {
+  margin: 0 1rem;
+}
+.mx-2 {
+  margin: 0 2rem;
+}
+.mx-3 {
+  margin: 0 3rem;
+}
 .my {
   margin: 0.5rem 0;
 }
@@ -138,8 +167,6 @@ img {
   font-size: 1rem;
   border: none;
   cursor: pointer;
-  margin-right: 0.5rem;
-  margin-left: 0.5rem;
   outline: none;
   border-radius: 0.5rem;
 }
@@ -405,7 +432,7 @@ button {
 
 .menu-buttons {
   display: flex;
-  height: 45%;
+  height: 50%;
   flex-direction: column;
   box-shadow: 0 0 2px #333;
   width: 30%;
@@ -461,12 +488,18 @@ button {
   height: 30%;
   border: solid 1px black;
   margin: 6rem 0 0 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .game-hand {
   height: 20%;
   margin: 2rem 0;
   border: solid 1px black;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .landlord {
