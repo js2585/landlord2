@@ -45,11 +45,22 @@ const Navbar = ({ logout, auth: { user, isAuthenticated, loading } }) => {
   );
   return (
     <nav className='navbar bg-dark'>
-    <div className='brand'><img src={require('../../img/logo.png')} style={{maxWidth: '50px', maxHeight: '50px', height: 'auto', width: 'auto', objectFit: 'contain'}}/>
-      <h1>
-        <Link to='/'>Fight the Landlord</Link>
-      </h1></div>
-      
+      <div className='brand'>
+        <img
+          src={require('../../img/logo.png')}
+          style={{
+            maxWidth: '50px',
+            maxHeight: '50px',
+            height: 'auto',
+            width: 'auto',
+            objectFit: 'contain'
+          }}
+        />
+        <h1>
+          <Link to='/'>Fight the Landlord</Link>
+        </h1>
+      </div>
+
       {!loading ? (
         <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
       ) : null}
