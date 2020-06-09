@@ -5,6 +5,7 @@ const socketio = require('socket.io');
 const mongoose = require('mongoose');
 const Room = require('./models/Room');
 const User = require('./models/User');
+const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
@@ -223,6 +224,8 @@ app.use(express.json({ extended: false }));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/room', require('./routes/api/room'));
+
+app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 
